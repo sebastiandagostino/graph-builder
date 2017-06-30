@@ -1,6 +1,8 @@
 package com.sebastiandagostino.graph;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import org.apache.commons.lang3.Validate;
 
@@ -8,12 +10,15 @@ public class Node {
     
     private final String id;
     
-    private final UniqueNodeList uniqueNodeList; 
+    private UniqueNodeList uniqueNodeList; 
+    
+    private List<Link> links;
     
     public Node(String id) {
         Validate.notNull(id);
         this.id = id;
         this.uniqueNodeList = new UniqueNodeList();
+        this.links = new ArrayList();
     }
     
     public String getId() {
