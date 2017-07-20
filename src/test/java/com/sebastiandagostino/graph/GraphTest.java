@@ -21,17 +21,17 @@ public class GraphTest {
     @Before
     public void setUp() {
         // NODE CREATION
-        node01 = new Node("v01");
-        node02 = new Node("v02");
-        node03 = new Node("v03");
-        node04 = new Node("v04");
-        node05 = new Node("v05");
-        node06 = new Node("v06");
-        node07 = new Node("v07");
-        node08 = new Node("v08");
-        node09 = new Node("v09");
-        node10 = new Node("v10");
-        node11 = new Node("v11");
+        node01 = new Node(1, 1, 1);
+        node02 = new Node(2, 1, 1);
+        node03 = new Node(3, 1, 1);
+        node04 = new Node(4, 1, 1);
+        node05 = new Node(5, 1, 1);
+        node06 = new Node(6, 1, 1);
+        node07 = new Node(7, 1, 1);
+        node08 = new Node(8, 1, 1);
+        node09 = new Node(9, 1, 1);
+        node10 = new Node(10, 1, 1);
+        node11 = new Node(11, 1, 1);
         
         // LEFT CLIQUE
         node01.getUniqueNodeList().add(node02);
@@ -92,6 +92,30 @@ public class GraphTest {
         node11.getUniqueNodeList().add(node08);
         node11.getUniqueNodeList().add(node09);
         node11.getUniqueNodeList().add(node10);
+
+        // LINKS
+        node01.addLink(new Link(node02.getId(), 1));
+        node01.addLink(new Link(node03.getId(), 1));
+        node02.addLink(new Link(node03.getId(), 1));
+        node02.addLink(new Link(node04.getId(), 1));
+        node03.addLink(new Link(node04.getId(), 1));
+        node03.addLink(new Link(node05.getId(), 1));
+        node04.addLink(new Link(node05.getId(), 1));
+        node04.addLink(new Link(node06.getId(), 1));
+        node05.addLink(new Link(node06.getId(), 1));
+        node05.addLink(new Link(node07.getId(), 1));
+        node06.addLink(new Link(node07.getId(), 1));
+        node06.addLink(new Link(node08.getId(), 1));
+        node07.addLink(new Link(node08.getId(), 1));
+        node07.addLink(new Link(node09.getId(), 1));
+        node08.addLink(new Link(node09.getId(), 1));
+        node08.addLink(new Link(node10.getId(), 1));
+        node09.addLink(new Link(node10.getId(), 1));
+        node09.addLink(new Link(node11.getId(), 1));
+        node10.addLink(new Link(node11.getId(), 1));
+        node10.addLink(new Link(node01.getId(), 1));
+        node11.addLink(new Link(node01.getId(), 1));
+        node11.addLink(new Link(node02.getId(), 1));
         
         // GRAPH SETUP
         graph = new Graph();
@@ -120,17 +144,25 @@ public class GraphTest {
     @Test
     public void testUNLCollectionCreation() {
         List<Node> list = new ArrayList<>();
-        list.add(new Node("1"));
+        list.add(new Node(1, 1, 1));
         assertEquals(list.size(), (new Graph(list)).getNodes().size());
     }
     
     @Test
     public void testJGraph() {
+        // TODO: Test
         System.out.println(graph.toJGraph().toString());
     }
-    
+
+    @Test
+    public void testJson() {
+        // TODO: Test
+        System.out.println(graph.toJsonString());
+    }
+
     @Test
     public void testFork() {
+        // TODO: Test
         System.out.println(graph);
         graph.calculateForkPossibility();
     }

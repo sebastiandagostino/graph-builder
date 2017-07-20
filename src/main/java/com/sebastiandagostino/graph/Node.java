@@ -1,27 +1,34 @@
 package com.sebastiandagostino.graph;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+
 import org.apache.commons.lang3.Validate;
 
 public class Node {
     
-    private final String id;
+    private int id;
+
+    private int vote;
+
+    private int latency;
     
     private UniqueNodeList uniqueNodeList; 
     
-    private List<Link> links;
+    private Set<Link> links;
     
-    public Node(String id) {
+    public Node(int id, int vote, int latency) {
         Validate.notNull(id);
+        Validate.notNull(vote);
+        Validate.notNull(latency);
+        Validate.isTrue(latency >= 0);
         this.id = id;
+        this.vote = vote;
+        this.latency = latency;
         this.uniqueNodeList = new UniqueNodeList();
-        this.links = new ArrayList();
+        this.links = new HashSet();
     }
     
-    public String getId() {
+    public int getId() {
         return this.id;
     }
     
@@ -33,6 +40,22 @@ public class Node {
         return this.getUniqueNodeList().intersect(node.getUniqueNodeList());
     }
 
+    public int getVote() {
+        return vote;
+    }
+
+    public int getLatency() {
+        return latency;
+    }
+
+    public void addLink(Link link) {
+        this.links.add(link);
+    }
+
+    public Collection<Link> getLinks() {
+        return links;
+    }
+
     @Override
     public String toString() {
         return "Node: " + this.id;
@@ -42,7 +65,7 @@ public class Node {
     public boolean equals(Object obj) {
         if (obj.getClass() != this.getClass())
             return false;
-        return this.id.compareTo(((Node) obj).id) == 0;
+        return this.id == ((Node) obj).id;
     }
 
     @Override

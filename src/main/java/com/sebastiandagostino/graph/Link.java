@@ -4,8 +4,19 @@ public class Link {
     
     private int toNodeId;
 
-    private int totalLatency;
+    private int latency;
 
-    private int sendTime;
-    
+    public Link(int toNodeId, int latency) {
+        this.toNodeId = toNodeId;
+        this.latency = latency;
+    }
+
+    public int getToNodeId() {
+        return toNodeId;
+    }
+
+    public int getLatency() {
+        return latency;
+    }
+
 }

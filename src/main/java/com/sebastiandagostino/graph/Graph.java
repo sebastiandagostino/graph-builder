@@ -3,6 +3,8 @@ package com.sebastiandagostino.graph;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+
+import com.sebastiandagostino.graph.network.Network;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 
@@ -29,7 +31,7 @@ public class Graph {
                     Collection<Node> intersection = mainNode.getUniqueNodeListIntersection(otherNode);
                     System.out.print("Intersection (" + mainNode.getId() + ", " + otherNode.getId() + ") : ");
                     System.out.print(intersection.size() + " >= ");
-                    System.out.print("Coeficient(" + 0.2 + ") * ");
+                    System.out.print("Coefficient(" + 0.2 + ") * ");
                     System.out.print("Max (" + mainNode.getUniqueNodeList().size() + ", " + otherNode.getUniqueNodeList().size() + ") => ");
                     boolean fork = intersection.size() >= 0.2 * Math.max(mainNode.getUniqueNodeList().size(), otherNode.getUniqueNodeList().size());
                     System.out.println(fork);
@@ -54,6 +56,12 @@ public class Graph {
                 .append(node.getUniqueNodeList().toString()).append(";\n"));
         stringBuilder.append("}");
         return stringBuilder.toString();
+    }
+
+    public String toJsonString() {
+        // TODO: Add UNL Thresh (check coefficient in method "calculateForkPossibility")
+        int unlThresh = 2;
+        return (new Network(this, unlThresh)).toString();
     }
     
 }

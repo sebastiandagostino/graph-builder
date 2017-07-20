@@ -21,33 +21,28 @@ public class NodeTest {
     public void tearDown() {
     }
 
-    @Test(expected = NullPointerException.class)
-    public void testCreationWithNullParameterFails() {
-        Node node = new Node(null);
-    }
-    
     @Test
     public void testNotEqualsDifferentClasses() {
-        Node node1 = new Node("v1");
+        Node node1 = new Node(1, 1, 1);
         assertNotSame(node1, "");
         assertFalse(node1.equals(""));
     }
     
     @Test
     public void testNotEquals() {
-        Node node1 = new Node("v1");
-        Node node2 = new Node("v2");
+        Node node1 = new Node(1, 1, 1);
+        Node node2 = new Node(2, 1, 1);
         assertNotSame(node1, node2);
-        assertFalse(node1.getId().compareTo(node2.getId()) == 0);
+        assertFalse(node1.getId() == node2.getId());
         assertFalse(node1.equals(node2));
     }
     
     @Test
     public void testEquals() {
-        Node node1 = new Node("v1");
-        Node node2 = new Node("v1");
+        Node node1 = new Node(1, 1, 1);
+        Node node2 = new Node(1, 1, 1);
         assertEquals(node1, node2);
-        assertTrue(node1.getId().compareTo(node2.getId()) == 0);
+        assertTrue(node1.getId() == node2.getId());
         assertTrue(node1.equals(node2));
     }
     

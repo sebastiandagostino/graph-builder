@@ -20,12 +20,12 @@ public class UniqueNodeListTest {
     
     @Before
     public void setUp() {
-        node1 = new Node("v1");
-        node2 = new Node("v2");
-        node3 = new Node("v3");
-        node4 = new Node("v4");
-        node5 = new Node("v5");
-        node6 = new Node("v6");
+        node1 = new Node(1, 1, 1);
+        node2 = new Node(2, 1, 1);
+        node3 = new Node(3, 1, 1);
+        node4 = new Node(4, 1, 1);
+        node5 = new Node(5, 1, 1);
+        node6 = new Node(6, 1, 1);
         unl1 = new UniqueNodeList();
         unl1.add(node1);
         unl1.add(node2);
@@ -52,7 +52,7 @@ public class UniqueNodeListTest {
     @Test
     public void testUNLCollectionCreation() {
         List<Node> list = new ArrayList<>();
-        list.add(new Node("v0"));
+        list.add(new Node(1, 1, 1));
         UniqueNodeList unl = new UniqueNodeList(list);
         assertEquals(list.size(), unl.getUNL().size());
     }
