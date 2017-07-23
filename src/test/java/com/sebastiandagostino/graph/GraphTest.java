@@ -21,17 +21,17 @@ public class GraphTest {
     @Before
     public void setUp() {
         // NODE CREATION
-        node01 = new Node(1, 1, 1);
-        node02 = new Node(2, 1, 1);
-        node03 = new Node(3, 1, 1);
-        node04 = new Node(4, 1, 1);
-        node05 = new Node(5, 1, 1);
-        node06 = new Node(6, 1, 1);
-        node07 = new Node(7, 1, 1);
-        node08 = new Node(8, 1, 1);
-        node09 = new Node(9, 1, 1);
-        node10 = new Node(10, 1, 1);
-        node11 = new Node(11, 1, 1);
+        node01 = new Node(0, 1, 1);
+        node02 = new Node(1, 1, 1);
+        node03 = new Node(2, 1, 1);
+        node04 = new Node(3, 1, 1);
+        node05 = new Node(4, 1, 1);
+        node06 = new Node(5, 1, 1);
+        node07 = new Node(6, -1, 1);
+        node08 = new Node(7, -1, 1);
+        node09 = new Node(8, -1, 1);
+        node10 = new Node(9, -1, 1);
+        node11 = new Node(10, -1, 1);
         
         // LEFT CLIQUE
         node01.getUniqueNodeList().add(node02);
