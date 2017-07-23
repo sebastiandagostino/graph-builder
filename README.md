@@ -1,6 +1,6 @@
 # Project graph-builder
 
-This project provides utility classes to generate a network that can produce a json file to be used for testing in the ripple-simulator fork. 
+This project provides utility classes to generate a network that can produce a json file to be used for testing in the [ripple-simulator fork](https://github.com/sebastiandagostino/ripple-simulator). 
 
 ## Prerequisites
 
@@ -14,7 +14,7 @@ As in any Maven project, it may be required to run
 mvn clean install
 ```
 
-For the time being it produces nothing of interest, since it prints the output in pseudo-tests that are used in the ripple-simulator fork.
+For the time being it produces nothing of interest, since it prints the output in pseudo-tests that are used in the [ripple-simulator fork](https://github.com/sebastiandagostino/ripple-simulator).
 
 ## Built With
 
