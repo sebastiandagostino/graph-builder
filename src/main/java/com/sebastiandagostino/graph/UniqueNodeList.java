@@ -42,13 +42,5 @@ public class UniqueNodeList {
                 .filter(otherUNL.getUNL()::contains)
                 .collect(Collectors.toSet());
     }
-
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder("UNL: [ ");
-        this.unl.stream().forEach((node)->stringBuilder.append(node.getId()).append(" "));
-        stringBuilder.append("]");
-        return stringBuilder.toString();
-    }
         
 }

@@ -3,8 +3,11 @@ package com.sebastiandagostino.graph;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.sebastiandagostino.graph.network.Network;
+import org.jgrapht.alg.BronKerboschCliqueFinder;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 
@@ -39,23 +42,25 @@ public class Graph {
             }
         }
     }
-    
-    public DefaultDirectedGraph<Node, DefaultEdge> toJGraph() {
+
+    /**
+     * This method uses the Bron-Kerbosch clique detection algorithm as it is described in
+     * [Samudrala R.,Moult J.:A Graph-theoretic Algorithm for comparative Modeling of Protein Structure; J.Mol.
+     */
+    public List<Clique> getAllMaximalCliques() {
+        DefaultDirectedGraph<Node, DefaultEdge> jgraph = this.toJGraph();
+        BronKerboschCliqueFinder cliqueFinder = new BronKerboschCliqueFinder(jgraph);
+        System.out.println(cliqueFinder.getAllMaximalCliques());
+        return (List<Clique>) cliqueFinder.getAllMaximalCliques()
+                .stream().map(clique -> new Clique((Set<Node>) clique)).collect(Collectors.toList());
+    }
+
+    private DefaultDirectedGraph<Node, DefaultEdge> toJGraph() {
         DefaultDirectedGraph<Node, DefaultEdge> graph = 
                 new DefaultDirectedGraph<>(DefaultEdge.class);
         this.nodes.stream().forEach(node->graph.addVertex(node));
         this.nodes.stream().forEach(node->node.getUniqueNodeList().getUNL().stream().forEach(unl->graph.addEdge(node, unl)));
         return graph;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder("{\n");
-        this.nodes.stream().forEach((node)->stringBuilder
-                .append("\t").append(node.toString()).append(", ")
-                .append(node.getUniqueNodeList().toString()).append(";\n"));
-        stringBuilder.append("}");
-        return stringBuilder.toString();
     }
 
     public String toJsonString() {
