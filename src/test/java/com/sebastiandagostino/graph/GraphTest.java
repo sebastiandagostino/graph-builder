@@ -2,6 +2,8 @@ package com.sebastiandagostino.graph;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
@@ -10,9 +12,15 @@ import org.junit.Test;
 public class GraphTest {
     
     private Graph graph;
-    
+
+    private static final int NUM_NODES = 11;
+
+    private static final int MAX_RANDOM = 500;
+
+    private List<Node> nodes;
+
     private Node node01, node02, node03, node04, node05, node06;
-    
+
     private Node node07, node08, node09, node10, node11;
     
     public GraphTest() {
@@ -21,18 +29,23 @@ public class GraphTest {
     @Before
     public void setUp() {
         // NODE CREATION
-        node01 = new Node(0, 1, 1);
-        node02 = new Node(1, 1, 1);
-        node03 = new Node(2, 1, 1);
-        node04 = new Node(3, 1, 1);
-        node05 = new Node(4, 1, 1);
-        node06 = new Node(5, 1, 1);
-        node07 = new Node(6, -1, 1);
-        node08 = new Node(7, -1, 1);
-        node09 = new Node(8, -1, 1);
-        node10 = new Node(9, -1, 1);
-        node11 = new Node(10, -1, 1);
-        
+        nodes = new ArrayList<>();
+        for(int i = 0; i < NUM_NODES; i++) {
+            int vote = (i <= 5) ? 1 : -1;
+            nodes.add(new Node(i, vote, (int) (Math.random() * MAX_RANDOM)));
+        }
+        node01 = nodes.get(0);
+        node02 = nodes.get(1);
+        node03 = nodes.get(2);
+        node04 = nodes.get(3);
+        node05 = nodes.get(4);
+        node06 = nodes.get(5);
+        node07 = nodes.get(6);
+        node08 = nodes.get(7);
+        node09 = nodes.get(8);
+        node10 = nodes.get(9);
+        node11 = nodes.get(10);
+
         // LEFT CLIQUE
         node01.getUniqueNodeList().add(node02);
         node01.getUniqueNodeList().add(node03);
@@ -94,28 +107,28 @@ public class GraphTest {
         node11.getUniqueNodeList().add(node10);
 
         // LINKS
-        node01.addLink(new Link(node02.getId(), 1));
-        node01.addLink(new Link(node03.getId(), 1));
-        node02.addLink(new Link(node03.getId(), 1));
-        node02.addLink(new Link(node04.getId(), 1));
-        node03.addLink(new Link(node04.getId(), 1));
-        node03.addLink(new Link(node05.getId(), 1));
-        node04.addLink(new Link(node05.getId(), 1));
-        node04.addLink(new Link(node06.getId(), 1));
-        node05.addLink(new Link(node06.getId(), 1));
-        node05.addLink(new Link(node07.getId(), 1));
-        node06.addLink(new Link(node07.getId(), 1));
-        node06.addLink(new Link(node08.getId(), 1));
-        node07.addLink(new Link(node08.getId(), 1));
-        node07.addLink(new Link(node09.getId(), 1));
-        node08.addLink(new Link(node09.getId(), 1));
-        node08.addLink(new Link(node10.getId(), 1));
-        node09.addLink(new Link(node10.getId(), 1));
-        node09.addLink(new Link(node11.getId(), 1));
-        node10.addLink(new Link(node11.getId(), 1));
-        node10.addLink(new Link(node01.getId(), 1));
-        node11.addLink(new Link(node01.getId(), 1));
-        node11.addLink(new Link(node02.getId(), 1));
+        node01.addLink(new Link(node02.getId(), (int) (Math.random() * MAX_RANDOM)));
+        node01.addLink(new Link(node09.getId(), (int) (Math.random() * MAX_RANDOM)));
+        node02.addLink(new Link(node09.getId(), (int) (Math.random() * MAX_RANDOM)));
+        node02.addLink(new Link(node10.getId(), (int) (Math.random() * MAX_RANDOM)));
+        node03.addLink(new Link(node10.getId(), (int) (Math.random() * MAX_RANDOM)));
+        node03.addLink(new Link(node11.getId(), (int) (Math.random() * MAX_RANDOM)));
+        node04.addLink(new Link(node01.getId(), (int) (Math.random() * MAX_RANDOM)));
+        node04.addLink(new Link(node02.getId(), (int) (Math.random() * MAX_RANDOM)));
+        node05.addLink(new Link(node06.getId(), (int) (Math.random() * MAX_RANDOM)));
+        node05.addLink(new Link(node07.getId(), (int) (Math.random() * MAX_RANDOM)));
+        node06.addLink(new Link(node07.getId(), (int) (Math.random() * MAX_RANDOM)));
+        node06.addLink(new Link(node08.getId(), (int) (Math.random() * MAX_RANDOM)));
+        node07.addLink(new Link(node08.getId(), (int) (Math.random() * MAX_RANDOM)));
+        node07.addLink(new Link(node09.getId(), (int) (Math.random() * MAX_RANDOM)));
+        node08.addLink(new Link(node09.getId(), (int) (Math.random() * MAX_RANDOM)));
+        node08.addLink(new Link(node10.getId(), (int) (Math.random() * MAX_RANDOM)));
+        node09.addLink(new Link(node10.getId(), (int) (Math.random() * MAX_RANDOM)));
+        node09.addLink(new Link(node11.getId(), (int) (Math.random() * MAX_RANDOM)));
+        node10.addLink(new Link(node11.getId(), (int) (Math.random() * MAX_RANDOM)));
+        node10.addLink(new Link(node01.getId(), (int) (Math.random() * MAX_RANDOM)));
+        node11.addLink(new Link(node01.getId(), (int) (Math.random() * MAX_RANDOM)));
+        node11.addLink(new Link(node02.getId(), (int) (Math.random() * MAX_RANDOM)));
         
         // GRAPH SETUP
         graph = new Graph();
