@@ -174,7 +174,7 @@ public class GraphTest {
 
     @Test
     public void testGraphToJsonString() {
-        String jsonString = graph.toJsonString();
+        String jsonString = graph.toString();
         System.out.println(jsonString);
 
         assertTrue(jsonString.contains("numNodes"));

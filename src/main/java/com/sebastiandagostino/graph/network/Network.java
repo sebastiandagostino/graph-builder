@@ -31,7 +31,6 @@ public class Network {
     }
 
     public Network(Graph graph, int unlThresh) {
-        // TODO: Test
         this();
         Collection<Node> nodes = graph.getNodes();
         this.numNodes = nodes.size();

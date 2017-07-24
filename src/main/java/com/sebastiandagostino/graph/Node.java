@@ -20,7 +20,6 @@ public class Node {
         Validate.notNull(id);
         Validate.notNull(vote);
         Validate.notNull(latency);
-        Validate.isTrue(latency >= 0);
         this.id = id;
         this.vote = vote;
         this.latency = latency;
