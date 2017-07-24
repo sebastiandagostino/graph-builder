@@ -19,7 +19,7 @@ For the time being it produces nothing of interest, since it prints the output i
 ## Built With
 
 * [Jackson](https://github.com/FasterXML/jackson) - Used to generate JSON streams
-* [JGraphT](http://jgrapht.org/) - Utility framework for graph creation
+* [JGraphT](http://jgrapht.org/) - Utility framework for graph creation and clique search
 * [Maven](https://maven.apache.org/) - Dependency Management
 
 ## Author
