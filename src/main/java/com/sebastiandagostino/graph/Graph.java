@@ -48,7 +48,7 @@ public class Graph {
         DefaultDirectedGraph<Node, DefaultEdge> jgraph = this.toJGraph();
         BronKerboschCliqueFinder cliqueFinder = new BronKerboschCliqueFinder(jgraph);
         return (List<Clique>) cliqueFinder.getAllMaximalCliques()
-                .stream().map(clique -> new Clique((Set<Node>) clique)).collect(Collectors.toList());
+                .stream().map(clique -> new Clique((Collection<Node>) clique)).collect(Collectors.toList());
     }
 
     /**

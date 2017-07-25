@@ -10,7 +10,7 @@ public class UniqueNodeList {
     private final Set<Node> unl;
     
     public UniqueNodeList() {
-        this.unl = new HashSet<>();
+        this.unl = new HashSet();
     }
     
     public UniqueNodeList(Collection collection) {
@@ -38,9 +38,7 @@ public class UniqueNodeList {
     }
     
     public Collection<Node> intersect(UniqueNodeList otherUNL) {
-        return this.unl.stream()
-                .filter(otherUNL.getUNL()::contains)
-                .collect(Collectors.toSet());
+        return this.unl.stream().filter(otherUNL.getUNL()::contains).collect(Collectors.toSet());
     }
         
 }

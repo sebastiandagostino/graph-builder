@@ -1,17 +1,39 @@
 package com.sebastiandagostino.graph;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Clique {
 
-    private Set<Node> nodes;
+    private Collection<Node> nodes;
 
-    public Clique(Set<Node> nodes) {
+    public Clique(Collection<Node> nodes) {
         this.nodes = nodes;
     }
 
-    public Set<Node> getNodes() {
+    public Collection<Node> getNodes() {
         return nodes;
+    }
+
+    public Collection<Node> getNodesInCommon(Clique clique) {
+        return this.getNodes().stream().filter(clique.getNodes()::contains).collect(Collectors.toList());
+    }
+
+    public Collection<Node> getNodesNotInCommon(Clique clique) {
+        List<Node> list = new ArrayList(this.getNodes());
+        Collection<Node> intersection = this.getNodesInCommon(clique);
+        list.removeIf(node -> intersection.contains(node));
+        return list;
+    }
+
+    public Collection<Node> getNodesNotInCommonFromBoth(Clique clique) {
+        List<Node> list = new ArrayList(this.getNodes());
+        list.addAll(clique.getNodes());
+        Collection<Node> intersection = this.getNodesInCommon(clique);
+        list.removeIf(node -> intersection.contains(node));
+        return list;
     }
 
     @Override
