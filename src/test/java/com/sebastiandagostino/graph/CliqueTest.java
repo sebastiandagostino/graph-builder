@@ -79,4 +79,18 @@ public class CliqueTest {
 		assertTrue(nodesNotIntersectingCliques.contains(node8));
 	}
 
+	@Test
+	public void testNodesIntersectingCliques() {
+		List<Clique> cliques = new ArrayList();
+		cliques.add(clique1);
+		cliques.add(clique2);
+		cliques.add(clique3);
+		Collection<Node> nodesIntersectingCliques = Clique.getNodesIntersectingCliques(cliques);
+
+		assertEquals(3, nodesIntersectingCliques.size());
+		assertTrue(nodesIntersectingCliques.contains(node2));
+		assertTrue(nodesIntersectingCliques.contains(node4));
+		assertTrue(nodesIntersectingCliques.contains(node6));
+	}
+
 }

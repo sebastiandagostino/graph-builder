@@ -54,6 +54,11 @@ public class Clique {
 		return nodeCountInCliques.entrySet().stream().filter(entry -> entry.getValue() == 1).map(entry -> entry.getKey()).collect(Collectors.toList());
 	}
 
+	public static Collection<Node> getNodesIntersectingCliques(List<Clique> cliques) {
+		Map<Node, Integer> nodeCountInCliques = getNodeCountInCliques(cliques);
+		return nodeCountInCliques.entrySet().stream().filter(entry -> entry.getValue() > 1).map(entry -> entry.getKey()).collect(Collectors.toList());
+	}
+
 	private static Map<Node, Integer> getNodeCountInCliques(List<Clique> cliques) {
 		Map<Node, Integer> nodeCountInCliques = new HashMap();
 		for (Clique clique : cliques) {
