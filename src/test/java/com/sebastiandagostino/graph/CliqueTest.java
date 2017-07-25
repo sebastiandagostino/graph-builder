@@ -13,7 +13,7 @@ import static org.junit.Assert.assertTrue;
 
 public class CliqueTest {
 
-    private Clique clique1, clique2, clique3;
+    private Clique clique1, clique2, clique3, clique4;
 
     private Node node1, node2, node3, node4, node5, node6, node7, node8;
 
@@ -31,6 +31,7 @@ public class CliqueTest {
         clique1 = new Clique(new ArrayList(Arrays.asList(node1, node2, node3, node4)));
         clique2 = new Clique(new ArrayList(Arrays.asList(node2, node4, node5, node6)));
         clique3 = new Clique(new ArrayList(Arrays.asList(node4, node6, node7, node8)));
+		clique4 = new Clique(new ArrayList(Arrays.asList(node2, node4, node6, node8)));
     }
 
     @Test
@@ -91,6 +92,31 @@ public class CliqueTest {
 		assertTrue(nodesIntersectingCliques.contains(node2));
 		assertTrue(nodesIntersectingCliques.contains(node4));
 		assertTrue(nodesIntersectingCliques.contains(node6));
+	}
+
+	@Test
+	public void testFilterIntersectingNodesFromCliques() {
+		List<Clique> cliques = new ArrayList();
+		cliques.add(clique1);
+		cliques.add(clique2);
+		cliques.add(clique3);
+		cliques.add(clique4);
+
+		List<Clique> filteredCliques = Clique.filterIntersectingNodesFromCliques(cliques);
+		assertEquals(3, filteredCliques.size());
+		int validationCount = 0;
+		for (Clique clique : filteredCliques) {
+			if (clique.getNodes().size() == 2) {
+				if (clique.getNodes().contains(node1) && clique.getNodes().contains(node3)) {
+					validationCount++;
+				}
+			} else if (clique.getNodes().size() == 1) {
+				if (clique.getNodes().contains(node5) || clique.getNodes().contains(node7)) {
+					validationCount++;
+				}
+			}
+		}
+		assertEquals(3, validationCount);
 	}
 
 }

@@ -7,6 +7,10 @@ public class Clique {
 
     private Collection<Node> nodes;
 
+	public Clique() {
+		this.nodes = new HashSet();
+	}
+
     public Clique(Collection<Node> nodes) {
         this.nodes = nodes;
     }
@@ -71,6 +75,23 @@ public class Clique {
 			}
 		}
 		return nodeCountInCliques;
+	}
+
+	public static List<Clique> filterIntersectingNodesFromCliques(List<Clique> cliques) {
+		List<Clique> filteredList = new ArrayList();
+    	Collection<Node> nodesIntersectingCliques = getNodesIntersectingCliques(cliques);
+		for (Clique clique : cliques) {
+			Clique filteredClique = new Clique();
+			for (Node node : clique.getNodes()) {
+				if (!nodesIntersectingCliques.contains(node)) {
+					filteredClique.getNodes().add(node);
+				}
+			}
+			if (!filteredClique.getNodes().isEmpty()) {
+				filteredList.add(filteredClique);
+			}
+		}
+		return filteredList;
 	}
 
 }
