@@ -1,8 +1,11 @@
 package com.sebastiandagostino.graph;
 
-import java.util.*;
-
 import org.apache.commons.lang3.Validate;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 public class Node {
     

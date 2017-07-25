@@ -1,15 +1,14 @@
 package com.sebastiandagostino.graph;
 
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Before;
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
-import org.junit.Before;
-import org.junit.Test;
 
 public class GraphTest {
     
@@ -24,9 +23,6 @@ public class GraphTest {
     private Node node00, node01, node02, node03, node04, node05;
 
     private Node node06, node07, node08, node09, node10;
-    
-    public GraphTest() {
-    }
 
     @Before
     public void setUp() {
@@ -145,10 +141,6 @@ public class GraphTest {
         graph.getNodes().add(node08);
         graph.getNodes().add(node09);
         graph.getNodes().add(node10);
-    }
-    
-    @After
-    public void tearDown() {
     }
 
     @Test

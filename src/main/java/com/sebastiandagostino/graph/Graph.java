@@ -1,12 +1,12 @@
 package com.sebastiandagostino.graph;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 import com.sebastiandagostino.graph.network.Network;
 import org.jgrapht.alg.BronKerboschCliqueFinder;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Graph {
 
@@ -20,7 +20,7 @@ public class Graph {
 
     public Graph() {
         this.unlThresh = DEFAULT_UNL_THRESH;
-        this.nodes = Collections.EMPTY_LIST;
+        this.nodes = new ArrayList();
     }
     
     public Graph(Collection nodes) {
@@ -42,7 +42,7 @@ public class Graph {
     
     /**
      * This method uses the Bron-Kerbosch clique detection algorithm as it is described in
-     * [Samudrala R.,Moult J.:A Graph-theoretic Algorithm for comparative Modeling of Protein Structure; J.Mol.
+     * Samudrala R.,Moult J.:A Graph-theoretic Algorithm for comparative Modeling of Protein Structure
      */
     public List<Clique> getAllMaximalCliques() {
         DefaultDirectedGraph<Node, DefaultEdge> jgraph = this.toJGraph();
@@ -69,7 +69,7 @@ public class Graph {
     }
 
     public void calculateForkPossibility() {
-        // TODO: Needs refactoring
+        // TODO: Needs refactoring - unused method
         for(Node mainNode : this.getNodes()) {
             for(Node otherNode : this.getNodes()) {
                 if (mainNode != otherNode && mainNode.getUniqueNodeList().getUNL().contains(otherNode)) {

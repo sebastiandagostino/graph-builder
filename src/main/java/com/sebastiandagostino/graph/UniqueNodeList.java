@@ -14,7 +14,7 @@ public class UniqueNodeList {
     }
     
     public UniqueNodeList(Collection collection) {
-        this.unl = new HashSet<>(collection);
+        this.unl = new HashSet(collection);
     }
     
     public boolean add(Node node) {
