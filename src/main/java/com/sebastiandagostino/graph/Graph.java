@@ -1,6 +1,5 @@
 package com.sebastiandagostino.graph;
 
-import com.sebastiandagostino.graph.network.Network;
 import org.jgrapht.alg.BronKerboschCliqueFinder;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
@@ -65,7 +64,7 @@ public class Graph {
 
     @Override
     public String toString() {
-        return (new Network(this, this.getUnlThresh())).toString();
+        return (new GraphJsonMapping(this, this.getUnlThresh())).toString();
     }
 
     public void calculateForkPossibility() {
