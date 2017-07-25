@@ -25,13 +25,9 @@ public class Network {
     @JsonProperty("links")
     private List<NetworkLink> links;
 
-    public Network() {
+    public Network(Graph graph, int unlThresh) {
         this.nodes = new ArrayList<>();
         this.links = new ArrayList<>();
-    }
-
-    public Network(Graph graph, int unlThresh) {
-        this();
         Collection<Node> nodes = graph.getNodes();
         this.numNodes = nodes.size();
         this.unlThresh = unlThresh;
@@ -45,38 +41,6 @@ public class Network {
                             link.getLatency())).collect(Collectors.toList()));
         });
 
-    }
-
-    public int getNumNodes() {
-        return numNodes;
-    }
-
-    public void setNumNodes(int numNodes) {
-        this.numNodes = numNodes;
-    }
-
-    public int getUnlThresh() {
-        return unlThresh;
-    }
-
-    public void setUnlThresh(int unlThresh) {
-        this.unlThresh = unlThresh;
-    }
-
-    public List<NetworkNode> getNodes() {
-        return nodes;
-    }
-
-    public void setNodes(List<NetworkNode> nodes) {
-        this.nodes = nodes;
-    }
-
-    public List<NetworkLink> getLinks() {
-        return links;
-    }
-
-    public void setLinks(List<NetworkLink> links) {
-        this.links = links;
     }
 
     @Override

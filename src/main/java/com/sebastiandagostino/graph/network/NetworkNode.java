@@ -26,36 +26,8 @@ public class NetworkNode {
         this.uniqueNodeList = new ArrayList<>();
     }
 
-    public int getNodeId() {
-        return nodeId;
-    }
-
-    public void setNodeId(int nodeId) {
-        this.nodeId = nodeId;
-    }
-
-    public int getVote() {
-        return vote;
-    }
-
-    public void setVote(int vote) {
-        this.vote = vote;
-    }
-
-    public int getLatency() {
-        return latency;
-    }
-
-    public void setLatency(int latency) {
-        this.latency = latency;
-    }
-
     public List<Integer> getUniqueNodeList() {
         return uniqueNodeList;
-    }
-
-    public void setUniqueNodeList(List<Integer> uniqueNodeList) {
-        this.uniqueNodeList = uniqueNodeList;
     }
 
 }
