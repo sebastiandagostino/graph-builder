@@ -1,10 +1,18 @@
 package com.sebastiandagostino.graph;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sebastiandagostino.graph.json.GraphJsonMapping;
+import com.sebastiandagostino.graph.json.LinkJsonMapping;
+import com.sebastiandagostino.graph.json.NodeJsonMapping;
 import org.jgrapht.alg.BronKerboschCliqueFinder;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 
-import java.util.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class Graph {
@@ -28,8 +36,33 @@ public class Graph {
 
     public Graph(Collection nodes, int unlThresh) {
         this.unlThresh = unlThresh;
-        this.nodes = new LinkedList<>(nodes);
+        this.nodes = new LinkedList(nodes);
     }
+
+    public Graph(String jsonString) {
+		final ObjectMapper mapper = new ObjectMapper();
+		try {
+			final GraphJsonMapping readValue = mapper.readValue(jsonString, GraphJsonMapping.class);
+			this.unlThresh = readValue.getUnlThresh();
+			this.nodes = new LinkedList<>();
+			for (NodeJsonMapping networkNode : readValue.getNodes()) {
+				Node node = new Node(networkNode.getNodeId(), networkNode.getVote(), networkNode.getLatency());
+				for (Integer nodeId : networkNode.getUniqueNodeList()) {
+					node.getUniqueNodeList().add(new Node(nodeId, 1, 1)); // default unnecessary values
+				}
+				this.nodes.add(node);
+			}
+			for (LinkJsonMapping networkLink : readValue.getLinks()) {
+				this.nodes.stream().forEach(node -> {
+					if (node.getId() == networkLink.getFrom()) {
+						node.addLink(new Link(networkLink.getTo(), networkLink.getLatency()));
+					}
+				});
+			}
+		} catch (IOException e) {
+			throw new IllegalArgumentException();
+		}
+	}
 
     public int getUnlThresh() {
         return unlThresh;

@@ -4,8 +4,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -163,6 +166,24 @@ public class GraphTest {
         System.out.println(cliques);
         assertEquals(4, cliques.size());
     }
+
+    @Test
+	public void testGraphFromJsonFile() throws FileNotFoundException {
+		ClassLoader classLoader = getClass().getClassLoader();
+		File file = new File(classLoader.getResource("network.json").getFile());
+		String jsonInputString = new Scanner(file).useDelimiter("\\Z").next();
+
+		Graph graph = new Graph(jsonInputString);
+		String jsonString = graph.toString();
+		System.out.println(jsonString);
+		assertTrue(jsonString.contains("numNodes"));
+		assertTrue(jsonString.contains("unlThresh"));
+		assertTrue(jsonString.contains("nodes"));
+		assertTrue(jsonString.contains("links"));
+		assertEquals(1000, StringUtils.countMatches(jsonString, "nodeId"));
+		assertEquals(1000, StringUtils.countMatches(jsonString, "vote"));
+		assertEquals(1000, StringUtils.countMatches(jsonString, "uniqueNodeList"));
+	}
 
     @Test
     public void testGraphToJsonString() {
