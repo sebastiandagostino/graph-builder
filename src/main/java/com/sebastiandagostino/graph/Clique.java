@@ -1,8 +1,6 @@
 package com.sebastiandagostino.graph;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Clique {
@@ -50,5 +48,24 @@ public class Clique {
         stringBuilder.append(" }");
         return stringBuilder.toString();
     }
+
+	public static Collection<Node> getNodesNotIntersectingCliques(List<Clique> cliques) {
+		Map<Node, Integer> nodeCountInCliques = getNodeCountInCliques(cliques);
+		return nodeCountInCliques.entrySet().stream().filter(entry -> entry.getValue() == 1).map(entry -> entry.getKey()).collect(Collectors.toList());
+	}
+
+	private static Map<Node, Integer> getNodeCountInCliques(List<Clique> cliques) {
+		Map<Node, Integer> nodeCountInCliques = new HashMap();
+		for (Clique clique : cliques) {
+			for (Node node : clique.getNodes()) {
+				if (nodeCountInCliques.containsKey(node)) {
+					nodeCountInCliques.merge(node, 1, Integer::sum);
+				} else {
+					nodeCountInCliques.put(node, 1);
+				}
+			}
+		}
+		return nodeCountInCliques;
+	}
 
 }
