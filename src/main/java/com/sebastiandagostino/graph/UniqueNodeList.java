@@ -13,12 +13,16 @@ public class UniqueNodeList {
         this.unl = new HashSet();
     }
     
-    public UniqueNodeList(Collection collection) {
+    public UniqueNodeList(Collection<Node> collection) {
         this.unl = new HashSet(collection);
     }
     
     public boolean add(Node node) {
         return this.unl.add(node);
+    }
+
+    public boolean addAll(Collection<Node> nodes) {
+        return this.unl.addAll(nodes);
     }
     
     public boolean remove(Node node) {

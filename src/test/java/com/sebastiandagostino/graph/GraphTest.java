@@ -199,4 +199,14 @@ public class GraphTest {
         assertEquals(NUM_NODES, StringUtils.countMatches(jsonString, "uniqueNodeList"));
     }
 
+    @Test
+    public void testImproveConnectivity() {
+        int size = this.graph.getNodes().size();
+        int vote = 1;
+        int connectivity = (int) (Math.random() * MAX_RANDOM);
+        this.graph.improveConnectivity(vote, connectivity);
+
+        assertEquals(size + 1, this.graph.getNodes().size());
+    }
+
 }

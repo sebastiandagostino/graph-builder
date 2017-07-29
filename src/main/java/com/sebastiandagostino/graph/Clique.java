@@ -26,7 +26,7 @@ public class Clique {
     public Collection<Node> getNodesNotInCommon(Clique clique) {
         List<Node> list = new ArrayList(this.getNodes());
         Collection<Node> intersection = this.getNodesInCommon(clique);
-        list.removeIf(node -> intersection.contains(node));
+        list.removeIf(intersection::contains);
         return list;
     }
 
@@ -34,7 +34,7 @@ public class Clique {
         List<Node> list = new ArrayList(this.getNodes());
         list.addAll(clique.getNodes());
         Collection<Node> intersection = this.getNodesInCommon(clique);
-        list.removeIf(node -> intersection.contains(node));
+        list.removeIf(intersection::contains);
         return list;
     }
 

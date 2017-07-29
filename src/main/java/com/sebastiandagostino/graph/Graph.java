@@ -73,14 +73,26 @@ public class Graph {
     }
     
     /**
-     * This method uses the Bron-Kerbosch clique detection algorithm as it is described in
-     * Samudrala R.,Moult J.:A Graph-theoretic Algorithm for comparative Modeling of Protein Structure
+     * This method uses the Bron-Kerbosch clique detection algorithm
      */
     public List<Clique> getAllMaximalCliques() {
         DefaultDirectedGraph<Node, DefaultEdge> jgraph = this.toJGraph();
         BronKerboschCliqueFinder cliqueFinder = new BronKerboschCliqueFinder(jgraph);
         return (List<Clique>) cliqueFinder.getAllMaximalCliques()
                 .stream().map(clique -> new Clique((Collection<Node>) clique)).collect(Collectors.toList());
+    }
+
+    /**
+     * This applies the algorithm
+     */
+    public void improveConnectivity(int vote, int latency) {
+        List<Clique> cliques = this.getAllMaximalCliques();
+        List<Clique> filteredCliques = Clique.filterIntersectingNodesFromCliques(cliques);
+        Node node = new Node(this.nodes.size(), vote, latency);
+        for (Clique clique : filteredCliques) {
+            node.getUniqueNodeList().addAll(clique.getNodes());
+        }
+        this.nodes.add(node);
     }
 
     /**
