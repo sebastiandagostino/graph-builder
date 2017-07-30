@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 public class Graph {
 
-    public static final int DEFAULT_UNL_THRESH = 2;
+    public static final int DEFAULT_UNL_THRESH = 3;
 
     public static final double UNL_INTERSECTION_PERCENTAGE = 0.2;
 
@@ -76,8 +76,8 @@ public class Graph {
      * This method uses the Bron-Kerbosch clique detection algorithm
      */
     public List<Clique> getAllMaximalCliques() {
-        DefaultDirectedGraph<Node, DefaultEdge> jgraph = this.toJGraph();
-        BronKerboschCliqueFinder cliqueFinder = new BronKerboschCliqueFinder(jgraph);
+        DefaultDirectedGraph<Node, DefaultEdge> jGraph = this.toJGraph();
+        BronKerboschCliqueFinder cliqueFinder = new BronKerboschCliqueFinder(jGraph);
         return (List<Clique>) cliqueFinder.getAllMaximalCliques()
                 .stream().map(clique -> new Clique((Collection<Node>) clique)).collect(Collectors.toList());
     }
@@ -91,6 +91,8 @@ public class Graph {
         Node node = new Node(this.nodes.size(), vote, latency);
         for (Clique clique : filteredCliques) {
             node.getUniqueNodeList().addAll(clique.getNodes());
+            node.getLinks().addAll(clique.getNodes().stream()
+                    .map(unlNode -> new Link(unlNode.getId(), unlNode.getLatency())).collect(Collectors.toList()));
         }
         this.nodes.add(node);
     }
@@ -101,7 +103,7 @@ public class Graph {
     private DefaultDirectedGraph<Node, DefaultEdge> toJGraph() {
         DefaultDirectedGraph<Node, DefaultEdge> graph = 
                 new DefaultDirectedGraph<>(DefaultEdge.class);
-        this.nodes.stream().forEach(node->graph.addVertex(node));
+        this.nodes.stream().forEach(graph::addVertex);
         this.nodes.stream().forEach(node->node.getUniqueNodeList().getUNL()
                 .stream().forEach(unl->graph.addEdge(node, unl)));
         return graph;
