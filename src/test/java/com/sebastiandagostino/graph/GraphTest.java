@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.Scanner;
 
 import static org.junit.Assert.assertEquals;
@@ -16,145 +15,13 @@ import static org.junit.Assert.assertTrue;
 
 public class GraphTest {
     
-    private Graph graph;
-
-    private static final int NUM_NODES = 11;
+    private GraphBuilder.Params tinyGraph;
 
     private static final int MAX_RANDOM = 500;
 
-    private List<Node> nodes;
-
-    private Node node00, node01, node02, node03, node04, node05;
-
-    private Node node06, node07, node08, node09, node10;
-
-    private Random nodeLatency;
-
-    private Random linkLatency;
-
     @Before
     public void setUp() {
-        // RANDOM SEEDS
-        nodeLatency = new Random();
-        nodeLatency.setSeed(123456789);
-        linkLatency = new Random();
-        linkLatency.setSeed(987654321);
-
-        // NODE CREATION
-        nodes = new ArrayList<>();
-        for(int i = 0; i < NUM_NODES; i++) {
-            int vote = (i <= 5) ? 1 : -1;
-            nodes.add(new Node(i, vote, nodeLatency.nextInt(MAX_RANDOM)));
-        }
-        node00 = nodes.get(0);
-        node01 = nodes.get(1);
-        node02 = nodes.get(2);
-        node03 = nodes.get(3);
-        node04 = nodes.get(4);
-        node05 = nodes.get(5);
-        node06 = nodes.get(6);
-        node07 = nodes.get(7);
-        node08 = nodes.get(8);
-        node09 = nodes.get(9);
-        node10 = nodes.get(10);
-
-        // LEFT CLIQUE
-        node00.getUniqueNodeList().add(node01);
-        node00.getUniqueNodeList().add(node02);
-        node00.getUniqueNodeList().add(node03);
-        node00.getUniqueNodeList().add(node04);
-        node00.getUniqueNodeList().add(node05);
-        node01.getUniqueNodeList().add(node00);
-        node01.getUniqueNodeList().add(node02);
-        node01.getUniqueNodeList().add(node03);
-        node01.getUniqueNodeList().add(node04);
-        node01.getUniqueNodeList().add(node05);
-        node02.getUniqueNodeList().add(node00);
-        node02.getUniqueNodeList().add(node01);
-        node02.getUniqueNodeList().add(node03);
-        node02.getUniqueNodeList().add(node04);
-        node02.getUniqueNodeList().add(node05);
-        node03.getUniqueNodeList().add(node00);
-        node03.getUniqueNodeList().add(node01);
-        node03.getUniqueNodeList().add(node02);
-        node03.getUniqueNodeList().add(node04);
-        node03.getUniqueNodeList().add(node05);
-        node04.getUniqueNodeList().add(node00);
-        node04.getUniqueNodeList().add(node01);
-        node04.getUniqueNodeList().add(node02);
-        node04.getUniqueNodeList().add(node03);
-        node04.getUniqueNodeList().add(node05);
-        node05.getUniqueNodeList().add(node00);
-        node05.getUniqueNodeList().add(node01);
-        node05.getUniqueNodeList().add(node02);
-        node05.getUniqueNodeList().add(node03);
-        node05.getUniqueNodeList().add(node04);
-        
-        // INTERSECTION
-        node04.getUniqueNodeList().add(node07);
-        node07.getUniqueNodeList().add(node04);
-        node03.getUniqueNodeList().add(node08);
-        node08.getUniqueNodeList().add(node03);
-        
-        // RIGHT CLIQUE
-        node06.getUniqueNodeList().add(node07);
-        node06.getUniqueNodeList().add(node08);
-        node06.getUniqueNodeList().add(node09);
-        node06.getUniqueNodeList().add(node10);
-        node07.getUniqueNodeList().add(node06);
-        node07.getUniqueNodeList().add(node08);
-        node07.getUniqueNodeList().add(node09);
-        node07.getUniqueNodeList().add(node10);
-        node08.getUniqueNodeList().add(node06);
-        node08.getUniqueNodeList().add(node07);
-        node08.getUniqueNodeList().add(node09);
-        node08.getUniqueNodeList().add(node10);
-        node09.getUniqueNodeList().add(node06);
-        node09.getUniqueNodeList().add(node07);
-        node09.getUniqueNodeList().add(node08);
-        node09.getUniqueNodeList().add(node10);
-        node10.getUniqueNodeList().add(node06);
-        node10.getUniqueNodeList().add(node07);
-        node10.getUniqueNodeList().add(node08);
-        node10.getUniqueNodeList().add(node09);
-
-        // LINKS
-        node00.addLink(new Link(node01.getId(), linkLatency.nextInt(MAX_RANDOM)));
-        node00.addLink(new Link(node08.getId(), linkLatency.nextInt(MAX_RANDOM)));
-        node01.addLink(new Link(node08.getId(), linkLatency.nextInt(MAX_RANDOM)));
-        node01.addLink(new Link(node09.getId(), linkLatency.nextInt(MAX_RANDOM)));
-        node02.addLink(new Link(node09.getId(), linkLatency.nextInt(MAX_RANDOM)));
-        node02.addLink(new Link(node10.getId(), linkLatency.nextInt(MAX_RANDOM)));
-        node03.addLink(new Link(node00.getId(), linkLatency.nextInt(MAX_RANDOM)));
-        node03.addLink(new Link(node01.getId(), linkLatency.nextInt(MAX_RANDOM)));
-        node04.addLink(new Link(node05.getId(), linkLatency.nextInt(MAX_RANDOM)));
-        node04.addLink(new Link(node06.getId(), linkLatency.nextInt(MAX_RANDOM)));
-        node05.addLink(new Link(node06.getId(), linkLatency.nextInt(MAX_RANDOM)));
-        node05.addLink(new Link(node07.getId(), linkLatency.nextInt(MAX_RANDOM)));
-        node06.addLink(new Link(node07.getId(), linkLatency.nextInt(MAX_RANDOM)));
-        node06.addLink(new Link(node08.getId(), linkLatency.nextInt(MAX_RANDOM)));
-        node07.addLink(new Link(node08.getId(), linkLatency.nextInt(MAX_RANDOM)));
-        node07.addLink(new Link(node09.getId(), linkLatency.nextInt(MAX_RANDOM)));
-        node08.addLink(new Link(node09.getId(), linkLatency.nextInt(MAX_RANDOM)));
-        node08.addLink(new Link(node10.getId(), linkLatency.nextInt(MAX_RANDOM)));
-        node09.addLink(new Link(node10.getId(), linkLatency.nextInt(MAX_RANDOM)));
-        node09.addLink(new Link(node00.getId(), linkLatency.nextInt(MAX_RANDOM)));
-        node10.addLink(new Link(node00.getId(), linkLatency.nextInt(MAX_RANDOM)));
-        node10.addLink(new Link(node01.getId(), linkLatency.nextInt(MAX_RANDOM)));
-        
-        // GRAPH SETUP
-        graph = new Graph();
-        graph.getNodes().add(node00);
-        graph.getNodes().add(node01);
-        graph.getNodes().add(node02);
-        graph.getNodes().add(node03);
-        graph.getNodes().add(node04);
-        graph.getNodes().add(node05);
-        graph.getNodes().add(node06);
-        graph.getNodes().add(node07);
-        graph.getNodes().add(node08);
-        graph.getNodes().add(node09);
-        graph.getNodes().add(node10);
+        this.tinyGraph = GraphBuilder.buildTinyGraph(MAX_RANDOM);
     }
 
     @Test
@@ -172,7 +39,7 @@ public class GraphTest {
     
     @Test
     public void testJGraphCliques() {
-        List<Clique> cliques = graph.getAllMaximalCliques();
+        List<Clique> cliques = this.tinyGraph.getGraph().getAllMaximalCliques();
 
         System.out.println(cliques);
         assertEquals(4, cliques.size());
@@ -199,27 +66,28 @@ public class GraphTest {
 
     @Test
     public void testGraphToJsonString() {
-        String jsonString = graph.toString();
+        int numNodes = this.tinyGraph.getGraph().getNodes().size();
+        String jsonString = this.tinyGraph.getGraph().toString();
         System.out.println(jsonString);
 
         assertTrue(jsonString.contains("numNodes"));
         assertTrue(jsonString.contains("unlThresh"));
         assertTrue(jsonString.contains("nodes"));
         assertTrue(jsonString.contains("links"));
-        assertEquals(NUM_NODES, StringUtils.countMatches(jsonString, "nodeId"));
-        assertEquals(NUM_NODES, StringUtils.countMatches(jsonString, "vote"));
-        assertEquals(NUM_NODES, StringUtils.countMatches(jsonString, "uniqueNodeList"));
+        assertEquals(numNodes, StringUtils.countMatches(jsonString, "nodeId"));
+        assertEquals(numNodes, StringUtils.countMatches(jsonString, "vote"));
+        assertEquals(numNodes, StringUtils.countMatches(jsonString, "uniqueNodeList"));
     }
 
     @Test
     public void testImproveConnectivity() {
-        int size = this.graph.getNodes().size();
+        int size = this.tinyGraph.getGraph().getNodes().size();
         int vote = -1;
-        int latency = nodeLatency.nextInt(MAX_RANDOM);
-        this.graph.improveConnectivity(vote, latency);
+        int latency = this.tinyGraph.getNodeLatency().nextInt(MAX_RANDOM);
+        this.tinyGraph.getGraph().improveConnectivity(vote, latency);
 
-        System.out.println(this.graph.toString());
-        assertEquals(size + 1, this.graph.getNodes().size());
+        System.out.println(this.tinyGraph.getGraph().toString());
+        assertEquals(size + 1, this.tinyGraph.getGraph().getNodes().size());
     }
 
     @Test
@@ -231,7 +99,7 @@ public class GraphTest {
         Graph graph = new Graph(jsonInputString);
         int size = graph.getNodes().size();
         int vote = -1;
-        int latency = nodeLatency.nextInt(MAX_RANDOM);
+        int latency = this.tinyGraph.getNodeLatency().nextInt(MAX_RANDOM);
         graph.improveConnectivity(vote, latency);
 
         System.out.println(graph.toString());
