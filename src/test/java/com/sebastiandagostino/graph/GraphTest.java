@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 import static org.junit.Assert.assertEquals;
@@ -27,13 +28,23 @@ public class GraphTest {
 
     private Node node06, node07, node08, node09, node10;
 
+    private Random nodeLatency;
+
+    private Random linkLatency;
+
     @Before
     public void setUp() {
+        // RANDOM SEEDS
+        nodeLatency = new Random();
+        nodeLatency.setSeed(123456789);
+        linkLatency = new Random();
+        linkLatency.setSeed(987654321);
+
         // NODE CREATION
         nodes = new ArrayList<>();
         for(int i = 0; i < NUM_NODES; i++) {
             int vote = (i <= 5) ? 1 : -1;
-            nodes.add(new Node(i, vote, (int) (Math.random() * MAX_RANDOM)));
+            nodes.add(new Node(i, vote, nodeLatency.nextInt(MAX_RANDOM)));
         }
         node00 = nodes.get(0);
         node01 = nodes.get(1);
@@ -108,28 +119,28 @@ public class GraphTest {
         node10.getUniqueNodeList().add(node09);
 
         // LINKS
-        node00.addLink(new Link(node01.getId(), (int) (Math.random() * MAX_RANDOM)));
-        node00.addLink(new Link(node08.getId(), (int) (Math.random() * MAX_RANDOM)));
-        node01.addLink(new Link(node08.getId(), (int) (Math.random() * MAX_RANDOM)));
-        node01.addLink(new Link(node09.getId(), (int) (Math.random() * MAX_RANDOM)));
-        node02.addLink(new Link(node09.getId(), (int) (Math.random() * MAX_RANDOM)));
-        node02.addLink(new Link(node10.getId(), (int) (Math.random() * MAX_RANDOM)));
-        node03.addLink(new Link(node00.getId(), (int) (Math.random() * MAX_RANDOM)));
-        node03.addLink(new Link(node01.getId(), (int) (Math.random() * MAX_RANDOM)));
-        node04.addLink(new Link(node05.getId(), (int) (Math.random() * MAX_RANDOM)));
-        node04.addLink(new Link(node06.getId(), (int) (Math.random() * MAX_RANDOM)));
-        node05.addLink(new Link(node06.getId(), (int) (Math.random() * MAX_RANDOM)));
-        node05.addLink(new Link(node07.getId(), (int) (Math.random() * MAX_RANDOM)));
-        node06.addLink(new Link(node07.getId(), (int) (Math.random() * MAX_RANDOM)));
-        node06.addLink(new Link(node08.getId(), (int) (Math.random() * MAX_RANDOM)));
-        node07.addLink(new Link(node08.getId(), (int) (Math.random() * MAX_RANDOM)));
-        node07.addLink(new Link(node09.getId(), (int) (Math.random() * MAX_RANDOM)));
-        node08.addLink(new Link(node09.getId(), (int) (Math.random() * MAX_RANDOM)));
-        node08.addLink(new Link(node10.getId(), (int) (Math.random() * MAX_RANDOM)));
-        node09.addLink(new Link(node10.getId(), (int) (Math.random() * MAX_RANDOM)));
-        node09.addLink(new Link(node00.getId(), (int) (Math.random() * MAX_RANDOM)));
-        node10.addLink(new Link(node00.getId(), (int) (Math.random() * MAX_RANDOM)));
-        node10.addLink(new Link(node01.getId(), (int) (Math.random() * MAX_RANDOM)));
+        node00.addLink(new Link(node01.getId(), linkLatency.nextInt(MAX_RANDOM)));
+        node00.addLink(new Link(node08.getId(), linkLatency.nextInt(MAX_RANDOM)));
+        node01.addLink(new Link(node08.getId(), linkLatency.nextInt(MAX_RANDOM)));
+        node01.addLink(new Link(node09.getId(), linkLatency.nextInt(MAX_RANDOM)));
+        node02.addLink(new Link(node09.getId(), linkLatency.nextInt(MAX_RANDOM)));
+        node02.addLink(new Link(node10.getId(), linkLatency.nextInt(MAX_RANDOM)));
+        node03.addLink(new Link(node00.getId(), linkLatency.nextInt(MAX_RANDOM)));
+        node03.addLink(new Link(node01.getId(), linkLatency.nextInt(MAX_RANDOM)));
+        node04.addLink(new Link(node05.getId(), linkLatency.nextInt(MAX_RANDOM)));
+        node04.addLink(new Link(node06.getId(), linkLatency.nextInt(MAX_RANDOM)));
+        node05.addLink(new Link(node06.getId(), linkLatency.nextInt(MAX_RANDOM)));
+        node05.addLink(new Link(node07.getId(), linkLatency.nextInt(MAX_RANDOM)));
+        node06.addLink(new Link(node07.getId(), linkLatency.nextInt(MAX_RANDOM)));
+        node06.addLink(new Link(node08.getId(), linkLatency.nextInt(MAX_RANDOM)));
+        node07.addLink(new Link(node08.getId(), linkLatency.nextInt(MAX_RANDOM)));
+        node07.addLink(new Link(node09.getId(), linkLatency.nextInt(MAX_RANDOM)));
+        node08.addLink(new Link(node09.getId(), linkLatency.nextInt(MAX_RANDOM)));
+        node08.addLink(new Link(node10.getId(), linkLatency.nextInt(MAX_RANDOM)));
+        node09.addLink(new Link(node10.getId(), linkLatency.nextInt(MAX_RANDOM)));
+        node09.addLink(new Link(node00.getId(), linkLatency.nextInt(MAX_RANDOM)));
+        node10.addLink(new Link(node00.getId(), linkLatency.nextInt(MAX_RANDOM)));
+        node10.addLink(new Link(node01.getId(), linkLatency.nextInt(MAX_RANDOM)));
         
         // GRAPH SETUP
         graph = new Graph();
@@ -202,10 +213,11 @@ public class GraphTest {
     @Test
     public void testImproveConnectivity() {
         int size = this.graph.getNodes().size();
-        int vote = 1;
-        int connectivity = (int) (Math.random() * MAX_RANDOM);
+        int vote = -1;
+        int connectivity = nodeLatency.nextInt(MAX_RANDOM);
         this.graph.improveConnectivity(vote, connectivity);
 
+        System.out.println(this.graph.toString());
         assertEquals(size + 1, this.graph.getNodes().size());
     }
 
