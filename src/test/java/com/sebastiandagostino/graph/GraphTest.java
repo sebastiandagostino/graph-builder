@@ -187,6 +187,7 @@ public class GraphTest {
 		Graph graph = new Graph(jsonInputString);
 		String jsonString = graph.toString();
 		System.out.println(jsonString);
+
 		assertTrue(jsonString.contains("numNodes"));
 		assertTrue(jsonString.contains("unlThresh"));
 		assertTrue(jsonString.contains("nodes"));
@@ -214,11 +215,27 @@ public class GraphTest {
     public void testImproveConnectivity() {
         int size = this.graph.getNodes().size();
         int vote = -1;
-        int connectivity = nodeLatency.nextInt(MAX_RANDOM);
-        this.graph.improveConnectivity(vote, connectivity);
+        int latency = nodeLatency.nextInt(MAX_RANDOM);
+        this.graph.improveConnectivity(vote, latency);
 
         System.out.println(this.graph.toString());
         assertEquals(size + 1, this.graph.getNodes().size());
+    }
+
+    @Test
+    public void testImproveConnectivityFromFile() throws FileNotFoundException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(classLoader.getResource("network.json").getFile());
+        String jsonInputString = new Scanner(file).useDelimiter("\\Z").next();
+
+        Graph graph = new Graph(jsonInputString);
+        int size = graph.getNodes().size();
+        int vote = -1;
+        int latency = nodeLatency.nextInt(MAX_RANDOM);
+        graph.improveConnectivity(vote, latency);
+
+        System.out.println(graph.toString());
+        assertEquals(size + 1, graph.getNodes().size());
     }
 
 }

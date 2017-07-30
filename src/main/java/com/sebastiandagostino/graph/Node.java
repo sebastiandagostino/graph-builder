@@ -1,10 +1,11 @@
 package com.sebastiandagostino.graph;
 
 import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 public class Node {
@@ -65,17 +66,16 @@ public class Node {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj.getClass() != this.getClass())
+        if(obj instanceof Node){
+            return new EqualsBuilder().append(this.id, ((Node) obj).id).isEquals();
+        } else {
             return false;
-        return this.id == ((Node) obj).id;
+        }
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 67 * hash + Objects.hashCode(this.id);
-        hash = 67 * hash + Objects.hashCode(this.uniqueNodeList);
-        return hash;
+        return new HashCodeBuilder().append(this.id).toHashCode();
     }
     
 }
