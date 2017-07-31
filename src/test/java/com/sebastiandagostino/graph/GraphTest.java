@@ -106,4 +106,9 @@ public class GraphTest {
         assertEquals(size + 1, graph.getNodes().size());
     }
 
+    public void testBuildClique() {
+        GraphBuilder.Params params = new GraphBuilder.Params();
+        Clique clique = GraphBuilder.buildClique(params, 1, 10, MAX_RANDOM);
+    }
+
 }

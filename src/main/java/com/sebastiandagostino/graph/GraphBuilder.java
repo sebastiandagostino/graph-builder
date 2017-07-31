@@ -1,10 +1,40 @@
 package com.sebastiandagostino.graph;
 
+import org.apache.commons.lang3.Validate;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class GraphBuilder {
+
+    public static Params buildGraph(int graphSize, int cliqueSize, int maxRandomLatency) {
+        int cliqueAmount = graphSize / cliqueSize;
+        cliqueAmount -= cliqueAmount;
+        // TODO: Not yet implemented
+        return null;
+    }
+
+    public static Clique buildClique(Params params, int cliqueSize, int startNodeId, int maxRandomLatency) {
+        Validate.notNull(cliqueSize);
+        Validate.isTrue(cliqueSize >= 0);
+        Validate.notNull(startNodeId);
+        Validate.isTrue(startNodeId >= 0);
+        List<Node> nodes = new ArrayList();
+        for (int i = startNodeId; i < (startNodeId + cliqueSize); i++) {
+            int vote = i % 2 == 0 ? 1 : -1;
+            Node node = new Node(i, vote, params.getNodeLatency().nextInt(maxRandomLatency));
+            nodes.add(node);
+        }
+        for (Node node : nodes) {
+            nodes.stream().forEach(n -> {
+                if (!n.equals(node)) {
+                    node.getUniqueNodeList().getUNL().add(n);}
+                }
+            );
+        }
+        return new Clique(nodes);
+    }
 
     public static Params buildTinyGraph(int maxRandomLatency) {
         // NODE CREATION
