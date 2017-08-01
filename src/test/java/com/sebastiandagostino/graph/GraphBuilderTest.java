@@ -9,11 +9,11 @@ public class GraphBuilderTest {
 
     @Test
     public void testCliqueBuilder() {
-        GraphBuilder.Params params = new GraphBuilder.Params();
         int cliqueSize = 20;
         int startNodeId = 15;
         int maxRandomLatency = 500;
-        Clique clique = GraphBuilder.buildClique(params, cliqueSize, startNodeId, maxRandomLatency);
+		GraphBuilder.Params params = new GraphBuilder.Params(maxRandomLatency, maxRandomLatency);
+        Clique clique = GraphBuilder.buildClique(params, cliqueSize, startNodeId);
 
         assertEquals(cliqueSize, clique.getNodes().size());
         for (int i = startNodeId; i < (cliqueSize + startNodeId); i++) {

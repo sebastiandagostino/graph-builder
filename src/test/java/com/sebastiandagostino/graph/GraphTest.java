@@ -14,14 +14,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class GraphTest {
-    
-    private GraphBuilder.Params tinyGraph;
+
+	private GraphBuilder.Params params;
+
+    private Graph tinyGraph;
 
     private static final int MAX_RANDOM = 500;
 
     @Before
     public void setUp() {
-        this.tinyGraph = GraphBuilder.buildTinyGraph(MAX_RANDOM);
+        this.params = new GraphBuilder.Params(MAX_RANDOM, MAX_RANDOM);
+    	this.tinyGraph = GraphBuilder.buildTinyGraph(params);
     }
 
     @Test
@@ -39,7 +42,7 @@ public class GraphTest {
     
     @Test
     public void testJGraphCliques() {
-        List<Clique> cliques = this.tinyGraph.getGraph().getAllMaximalCliques();
+        List<Clique> cliques = this.tinyGraph.getAllMaximalCliques();
 
         System.out.println(cliques);
         assertEquals(4, cliques.size());
@@ -66,8 +69,8 @@ public class GraphTest {
 
     @Test
     public void testGraphToJsonString() {
-        int numNodes = this.tinyGraph.getGraph().getNodes().size();
-        String jsonString = this.tinyGraph.getGraph().toString();
+        int numNodes = this.tinyGraph.getNodes().size();
+        String jsonString = this.tinyGraph.toString();
         System.out.println(jsonString);
 
         assertTrue(jsonString.contains("numNodes"));
@@ -81,13 +84,13 @@ public class GraphTest {
 
     @Test
     public void testImproveConnectivity() {
-        int size = this.tinyGraph.getGraph().getNodes().size();
+        int size = this.tinyGraph.getNodes().size();
         int vote = -1;
-        int latency = this.tinyGraph.getNodeLatency().nextInt(MAX_RANDOM);
-        this.tinyGraph.getGraph().improveConnectivity(vote, latency);
+        int latency = this.params.getNextNodeLatencyRandomInteger();
+        this.tinyGraph.improveConnectivity(vote, latency);
 
-        System.out.println(this.tinyGraph.getGraph().toString());
-        assertEquals(size + 1, this.tinyGraph.getGraph().getNodes().size());
+        System.out.println(this.tinyGraph.toString());
+        assertEquals(size + 1, this.tinyGraph.getNodes().size());
     }
 
     @Test
@@ -99,7 +102,7 @@ public class GraphTest {
         Graph graph = new Graph(jsonInputString);
         int size = graph.getNodes().size();
         int vote = -1;
-        int latency = this.tinyGraph.getNodeLatency().nextInt(MAX_RANDOM);
+        int latency = this.params.getNextNodeLatencyRandomInteger();
         graph.improveConnectivity(vote, latency);
 
         System.out.println(graph.toString());
