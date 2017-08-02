@@ -8,16 +8,16 @@ import java.util.List;
 public class NodeJsonMapping {
 
 	@JsonProperty("nodeId")
-    private int nodeId;
+	private int nodeId;
 
 	@JsonProperty("vote")
-    private int vote;
+	private int vote;
 
 	@JsonProperty("latency")
-    private int latency;
+	private int latency;
 
 	@JsonProperty("uniqueNodeList")
-    private List<Integer> uniqueNodeList;
+	private List<Integer> uniqueNodeList;
 
 	public NodeJsonMapping(@JsonProperty("nodeId") int nodeId, @JsonProperty("vote") int vote, @JsonProperty("latency") int latency,
 			@JsonProperty("uniqueNodeList") List<Integer> uniqueNodeList) {

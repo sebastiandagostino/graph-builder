@@ -5,13 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class LinkJsonMapping {
 
 	@JsonProperty("from")
-	int from;
+	private int from;
 
 	@JsonProperty("to")
-	int to;
+	private int to;
 
 	@JsonProperty("latency")
-	int latency;
+	private int latency;
 
 	public LinkJsonMapping(@JsonProperty("from") int from, @JsonProperty("to") int to, @JsonProperty("latency") int latency) {
 		this.from = from;

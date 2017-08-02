@@ -17,29 +17,29 @@ import java.util.stream.Collectors;
 
 public class Graph {
 
-    public static final int DEFAULT_UNL_THRESH = 3;
+	public static final int DEFAULT_UNL_THRESH = 3;
 
-    public static final double UNL_INTERSECTION_PERCENTAGE = 0.2;
+	public static final double UNL_INTERSECTION_PERCENTAGE = 0.2;
 
-    private final List<Node> nodes;
+	private final List<Node> nodes;
 
-    private int unlThresh;
+	private int unlThresh;
 
-    public Graph() {
-        this.unlThresh = DEFAULT_UNL_THRESH;
-        this.nodes = new ArrayList();
-    }
-    
-    public Graph(Collection nodes) {
-        this(nodes, DEFAULT_UNL_THRESH);
-    }
+	public Graph() {
+		this.unlThresh = DEFAULT_UNL_THRESH;
+		this.nodes = new ArrayList();
+	}
 
-    public Graph(Collection nodes, int unlThresh) {
-        this.unlThresh = unlThresh;
-        this.nodes = new LinkedList(nodes);
-    }
+	public Graph(Collection nodes) {
+		this(nodes, DEFAULT_UNL_THRESH);
+	}
 
-    public Graph(String jsonString) {
+	public Graph(Collection nodes, int unlThresh) {
+		this.unlThresh = unlThresh;
+		this.nodes = new LinkedList(nodes);
+	}
+
+	public Graph(String jsonString) {
 		final ObjectMapper mapper = new ObjectMapper();
 		try {
 			final GraphJsonMapping readValue = mapper.readValue(jsonString, GraphJsonMapping.class);
@@ -64,73 +64,71 @@ public class Graph {
 		}
 	}
 
-    public int getUnlThresh() {
-        return unlThresh;
-    }
+	public int getUnlThresh() {
+		return unlThresh;
+	}
 
-    public Collection<Node> getNodes() {
-        return this.nodes;
-    }
-    
-    /**
-     * This method uses the Bron-Kerbosch clique detection algorithm
-     */
-    public List<Clique> getAllMaximalCliques() {
-        DefaultDirectedGraph<Node, DefaultEdge> jGraph = this.toJGraph();
-        BronKerboschCliqueFinder cliqueFinder = new BronKerboschCliqueFinder(jGraph);
-        return (List<Clique>) cliqueFinder.getAllMaximalCliques()
-                .stream().map(clique -> new Clique((Collection<Node>) clique)).collect(Collectors.toList());
-    }
+	public Collection<Node> getNodes() {
+		return this.nodes;
+	}
 
-    /**
-     * This applies the algorithm
-     */
-    public void improveConnectivity(int vote, int latency) {
-        List<Clique> cliques = this.getAllMaximalCliques();
-        List<Clique> filteredCliques = Clique.filterIntersectingNodesFromCliques(cliques);
-        Node node = new Node(this.nodes.size(), vote, latency);
-        for (Clique clique : filteredCliques) {
-            node.getUniqueNodeList().addAll(clique.getNodes());
-            node.getLinks().addAll(clique.getNodes().stream()
-                    .map(unlNode -> new Link(unlNode.getId(), unlNode.getLatency())).collect(Collectors.toList()));
-        }
-        this.nodes.add(node);
-    }
+	/**
+	 * This method uses the Bron-Kerbosch clique detection algorithm
+	 */
+	public List<Clique> getAllMaximalCliques() {
+		DefaultDirectedGraph<Node, DefaultEdge> jGraph = this.toJGraph();
+		BronKerboschCliqueFinder cliqueFinder = new BronKerboschCliqueFinder(jGraph);
+		return (List<Clique>) cliqueFinder.getAllMaximalCliques()
+				.stream().map(clique -> new Clique((Collection<Node>) clique))
+				.collect(Collectors.toList());
+	}
 
-    /**
-     * Convert to JGraph considering UNL as connections
-     */
-    private DefaultDirectedGraph<Node, DefaultEdge> toJGraph() {
-        DefaultDirectedGraph<Node, DefaultEdge> graph = 
-                new DefaultDirectedGraph<>(DefaultEdge.class);
-        this.nodes.stream().forEach(graph::addVertex);
-        this.nodes.stream().forEach(node->node.getUniqueNodeList().getUNL()
-                .stream().forEach(unl->graph.addEdge(node, unl)));
-        return graph;
-    }
+	/**
+	 * This applies the algorithm
+	 */
+	public void improveConnectivity(int vote, int latency) {
+		List<Clique> cliques = this.getAllMaximalCliques();
+		List<Clique> filteredCliques = Clique.filterIntersectingNodesFromCliques(cliques);
+		Node node = new Node(this.nodes.size(), vote, latency);
+		for (Clique clique : filteredCliques) {
+			node.getUniqueNodeList().addAll(clique.getNodes());
+			node.getLinks().addAll(clique.getNodes()
+					.stream().map(unlNode -> new Link(unlNode.getId(), unlNode.getLatency())).collect(Collectors.toList()));
+		}
+		this.nodes.add(node);
+	}
 
-    @Override
-    public String toString() {
-        return (new GraphJsonMapping(this, this.getUnlThresh())).toString();
-    }
+	/**
+	 * Convert to JGraph considering UNL as connections
+	 */
+	private DefaultDirectedGraph<Node, DefaultEdge> toJGraph() {
+		DefaultDirectedGraph<Node, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+		this.nodes.stream().forEach(graph::addVertex);
+		this.nodes.stream().forEach(node -> node.getUniqueNodeList().getUNL().stream().forEach(unl -> graph.addEdge(node, unl)));
+		return graph;
+	}
 
-    public void calculateForkPossibility() {
-        // TODO: Needs refactoring - unused method
-        for(Node mainNode : this.getNodes()) {
-            for(Node otherNode : this.getNodes()) {
-                if (mainNode != otherNode && mainNode.getUniqueNodeList().getUNL().contains(otherNode)) {
-                    Collection<Node> intersection = mainNode.getUniqueNodeListIntersection(otherNode);
-                    System.out.print("Intersection (" + mainNode.getId() + ", " + otherNode.getId() + ") : ");
-                    System.out.print(intersection.size() + " >= ");
-                    System.out.print("Coefficient(" + UNL_INTERSECTION_PERCENTAGE + ") * ");
-                    System.out.print("Max (" + mainNode.getUniqueNodeList().size() + ", "
-                            + otherNode.getUniqueNodeList().size() + ") => ");
-                    boolean fork = intersection.size() >= UNL_INTERSECTION_PERCENTAGE *
-                            Math.max(mainNode.getUniqueNodeList().size(), otherNode.getUniqueNodeList().size());
-                    System.out.println(fork);
-                }
-            }
-        }
-    }
+	@Override
+	public String toString() {
+		return (new GraphJsonMapping(this, this.getUnlThresh())).toString();
+	}
+
+	public void calculateForkPossibility() {
+		// TODO: Needs refactoring - unused method
+		for (Node mainNode : this.getNodes()) {
+			for (Node otherNode : this.getNodes()) {
+				if (mainNode != otherNode && mainNode.getUniqueNodeList().getUNL().contains(otherNode)) {
+					Collection<Node> intersection = mainNode.getUniqueNodeListIntersection(otherNode);
+					System.out.print("Intersection (" + mainNode.getId() + ", " + otherNode.getId() + ") : ");
+					System.out.print(intersection.size() + " >= ");
+					System.out.print("Coefficient(" + UNL_INTERSECTION_PERCENTAGE + ") * ");
+					System.out.print("Max (" + mainNode.getUniqueNodeList().size() + ", " + otherNode.getUniqueNodeList().size() + ") => ");
+					boolean fork = intersection.size() >= UNL_INTERSECTION_PERCENTAGE * Math
+							.max(mainNode.getUniqueNodeList().size(), otherNode.getUniqueNodeList().size());
+					System.out.println(fork);
+				}
+			}
+		}
+	}
 
 }
