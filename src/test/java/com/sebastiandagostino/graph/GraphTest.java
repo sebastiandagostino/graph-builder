@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
 
 public class GraphTest {
 
-	private GraphBuilder.Params params;
+	private LatencyRandomParams params;
 
 	private Graph tinyGraph;
 
@@ -23,7 +23,7 @@ public class GraphTest {
 
 	@Before
 	public void setUp() {
-		this.params = new GraphBuilder.Params(MAX_RANDOM, MAX_RANDOM);
+		this.params = new LatencyRandomParams(MAX_RANDOM, MAX_RANDOM);
 		this.tinyGraph = GraphBuilder.buildTinyGraph(params);
 	}
 
@@ -86,7 +86,7 @@ public class GraphTest {
 	public void testImproveConnectivity() {
 		int size = this.tinyGraph.getNodes().size();
 		int vote = -1;
-		int latency = this.params.getNextNodeLatencyRandomInteger();
+		int latency = this.params.getNextNodeLatency();
 		this.tinyGraph.improveConnectivity(vote, latency);
 
 		System.out.println(this.tinyGraph.toString());
@@ -102,7 +102,7 @@ public class GraphTest {
 		Graph graph = new Graph(jsonInputString);
 		int size = graph.getNodes().size();
 		int vote = -1;
-		int latency = this.params.getNextNodeLatencyRandomInteger();
+		int latency = this.params.getNextNodeLatency();
 		graph.improveConnectivity(vote, latency);
 
 		System.out.println(graph.toString());
