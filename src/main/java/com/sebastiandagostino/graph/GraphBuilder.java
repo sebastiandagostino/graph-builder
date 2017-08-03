@@ -14,10 +14,15 @@ public class GraphBuilder {
 		LatencyRandomParams params = new LatencyRandomParams(maxNodeLatency, maxLinkLatency);
 		List<Clique> cliques = new ArrayList();
 		for (int i = 0; i < cliqueSize; i++) {
-			cliques.add(buildClique(params, cliqueAmount, i * cliqueSize));
+			cliques.add(buildClique(params, cliqueAmount, i * cliqueAmount));
 		}
-		// TODO: Add links
-		return null;
+		for (int i = 0; i < outboundLinksPerClique; i++) {
+			// TODO: Add links between cliques
+		}
+		// TODO: Check UNL Thresh
+		Graph graph = new Graph(cliqueAmount / 3);
+		cliques.stream().forEach(clique -> graph.getNodes().addAll(clique.getNodes()));
+		return graph;
 	}
 
 	public static Clique buildClique(LatencyRandomParams params, int cliqueSize, int startNodeId) {

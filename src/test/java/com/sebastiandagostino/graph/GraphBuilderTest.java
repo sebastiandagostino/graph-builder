@@ -8,6 +8,8 @@ import static org.junit.Assert.assertTrue;
 
 public class GraphBuilderTest {
 
+	private static final int MAX_RANDOM = 500;
+
 	@Test
 	public void testCliqueBuilder() {
 		int cliqueSize = 20;
@@ -25,5 +27,13 @@ public class GraphBuilderTest {
 			}
 		}
 	}
+
+	@Test
+	public void testGraphBuilder() {
+		// TODO: Test
+		// Example: graphSize = 60, cliqueSize = 3, outboundLinks = 6 => cliqueAmount = (60 - 6) / 3 = 54 / 3 = 18
+		Graph graph = GraphBuilder.buildGraph(60, 3, 6, MAX_RANDOM, MAX_RANDOM);
+		System.out.println(graph);
+    }
 
 }

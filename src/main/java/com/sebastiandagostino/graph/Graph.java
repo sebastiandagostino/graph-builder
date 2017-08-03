@@ -25,6 +25,11 @@ public class Graph {
 
 	private int unlThresh;
 
+	public Graph(int unlThresh) {
+		this.unlThresh = unlThresh;
+		this.nodes = new ArrayList();
+    }
+
 	public Graph() {
 		this.unlThresh = DEFAULT_UNL_THRESH;
 		this.nodes = new ArrayList();
