@@ -14,7 +14,19 @@ As in any Maven project, it may be required to run
 mvn clean install
 ```
 
-For the time being it produces nothing of interest, since it prints the output in pseudo-tests that are used in the [ripple-simulator fork](https://github.com/sebastiandagostino/ripple-simulator).
+After compilation with Maven, to run it in any console:
+
+```
+java -jar target/GraphBuilder-1.0-jar-with-dependencies.jar 54 3 6 500 500
+```
+
+The five parameters after the jar file are the following:
+
+* _Graph Size_: must be a positive integer greater than _Clique Size_ 
+* _Clique Size_: must be a positive integer greater than 1
+* _Outbound Links Per Clique_: must be a positive integer greater than _Clique Size_
+* _Max Node Latency_: must be a positive integer
+* _Max Link Latency_: must be a positive integer
 
 ## Built With
 

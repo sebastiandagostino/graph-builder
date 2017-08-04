@@ -7,7 +7,34 @@ import java.util.List;
 
 public class GraphBuilder {
 
+    public static void main(String [] args) {
+        if (args.length != 5) {
+            System.err.println("Usage: java -jar GraphBuilder-1.0.jar graphSize cliqueSize outboundLinksPerClique maxNodeLatency maxLinkLatency");
+            return;
+        }
+        try {
+            int graphSize = Integer.parseInt(args[0]);
+            int cliqueSize = Integer.parseInt(args[1]);
+            int outboundLinksPerClique = Integer.parseInt(args[2]);
+            int maxNodeLatency = Integer.parseInt(args[3]);
+            int maxLinkLatency = Integer.parseInt(args[4]);
+            Graph graph = buildGraph(graphSize, cliqueSize, outboundLinksPerClique, maxNodeLatency, maxLinkLatency);
+            System.out.println(graph.toString());
+        } catch (NumberFormatException e) {
+            System.err.println("Parameters must be integer numbers. Exiting...");
+        } catch (IllegalArgumentException e) {
+            System.err.println("Parameters must meet all the conditions:");
+            System.err.println("\t graphSize >= cliqueSize");
+            System.err.println("\t outboundLinksPerClique >= cliqueSize");
+            System.err.println("\t cliqueSize >= 1");
+            System.err.println("\t maxNodeLatency >= 0");
+            System.err.println("\t maxLinkLatency >=0");
+            System.err.println("Exiting...");
+        }
+    }
+
     public static Graph buildGraph(int graphSize, int cliqueSize, int outboundLinksPerClique, int maxNodeLatency, int maxLinkLatency) {
+        Validate.isTrue(maxNodeLatency >= 0 && maxLinkLatency >=0);
         Validate.isTrue(graphSize >= cliqueSize && outboundLinksPerClique >= cliqueSize && cliqueSize >= 1);
         int cliqueAmount = graphSize / cliqueSize;
         LatencyRandomParams params = new LatencyRandomParams(maxNodeLatency, maxLinkLatency);

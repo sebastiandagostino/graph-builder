@@ -3,7 +3,6 @@ package com.sebastiandagostino.graph;
 import org.junit.Test;
 
 import java.util.Collection;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -34,7 +33,6 @@ public class GraphBuilderTest {
         GraphBuilder.buildClique(params, -1, 0);
     }
 
-
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidCliqueBuilderParameterStartNodeId() {
         LatencyRandomParams params = new LatencyRandomParams(MAX_RANDOM, MAX_RANDOM);
@@ -47,13 +45,17 @@ public class GraphBuilderTest {
         int cliqueSize = 3;
         int outboundLinksPerClique = 6;
         Graph graph = GraphBuilder.buildGraph(graphSize, cliqueSize, outboundLinksPerClique, MAX_RANDOM, MAX_RANDOM);
-        System.out.println(graph);
 
         assertNotNull(graph);
         assertEquals(graphSize, graph.getNodes().size());
         assertTrue(graph.getAllMaximalCliques().size() > outboundLinksPerClique);
         assertEquals((graphSize / cliqueSize - 1) * graphSize + outboundLinksPerClique,
                 graph.getNodes().stream().map(Node::getLinks).mapToInt(Collection::size).sum());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidGraphBuilderParameterGraphSize() {
+        GraphBuilder.buildGraph(0, 1, 1, MAX_RANDOM, MAX_RANDOM);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -67,8 +69,13 @@ public class GraphBuilderTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testInvalidGraphBuilderParameter() {
-        GraphBuilder.buildGraph(0, 1, 1, MAX_RANDOM, MAX_RANDOM);
+    public void testInvalidGraphBuilderParameterMaxNodeLatency() {
+        GraphBuilder.buildGraph(10, 2, 3, -1, MAX_RANDOM);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidGraphBuilderParameterMaxLinkLatency() {
+        GraphBuilder.buildGraph(10, 2, 3, MAX_RANDOM, -1);
     }
 
 }

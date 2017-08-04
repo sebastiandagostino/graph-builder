@@ -44,7 +44,6 @@ public class GraphTest {
     public void testJGraphCliques() {
         List<Clique> cliques = this.tinyGraph.getAllMaximalCliques();
 
-        System.out.println(cliques);
         assertEquals(4, cliques.size());
     }
 
@@ -62,7 +61,6 @@ public class GraphTest {
 
         Graph graph = new Graph(jsonInputString);
         String jsonString = graph.toString();
-        System.out.println(jsonString);
 
         assertTrue(jsonString.contains("numNodes"));
         assertTrue(jsonString.contains("unlThresh"));
@@ -77,7 +75,6 @@ public class GraphTest {
     public void testGraphToJsonString() {
         int numNodes = this.tinyGraph.getNodes().size();
         String jsonString = this.tinyGraph.toString();
-        System.out.println(jsonString);
 
         assertTrue(jsonString.contains("numNodes"));
         assertTrue(jsonString.contains("unlThresh"));
@@ -95,7 +92,6 @@ public class GraphTest {
         int latency = this.params.getNextNodeLatency();
         this.tinyGraph.improveConnectivity(vote, latency);
 
-        System.out.println(this.tinyGraph.toString());
         assertEquals(size + 1, this.tinyGraph.getNodes().size());
     }
 
@@ -111,7 +107,6 @@ public class GraphTest {
         int latency = this.params.getNextNodeLatency();
         graph.improveConnectivity(vote, latency);
 
-        System.out.println(graph.toString());
         assertEquals(size + 1, graph.getNodes().size());
     }
 
