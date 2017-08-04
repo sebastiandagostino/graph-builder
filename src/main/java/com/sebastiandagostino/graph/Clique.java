@@ -19,6 +19,10 @@ public class Clique {
         return nodes;
     }
 
+    public List<Node> getNodesAsList() {
+        return new ArrayList(nodes);
+    }
+
     public Collection<Node> getNodesInCommon(Clique clique) {
         return this.getNodes().stream().filter(clique.getNodes()::contains).collect(Collectors.toList());
     }

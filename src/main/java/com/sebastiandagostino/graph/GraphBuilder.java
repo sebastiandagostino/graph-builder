@@ -9,17 +9,21 @@ public class GraphBuilder {
 
     public static Graph buildGraph(int graphSize, int cliqueSize, int outboundLinksPerClique, int maxNodeLatency, int maxLinkLatency) {
         Validate.isTrue(graphSize >= cliqueSize && outboundLinksPerClique >= cliqueSize && cliqueSize >= 1);
-        // Example: graphSize = 50, outboundLinks = 6, cliqueSize = 2 => cliqueAmount = (50 - 6) / 2 = 44 / 2 = 22
-        int cliqueAmount = (graphSize - outboundLinksPerClique) / cliqueSize;
+        int cliqueAmount = graphSize / cliqueSize;
         LatencyRandomParams params = new LatencyRandomParams(maxNodeLatency, maxLinkLatency);
         List<Clique> cliques = new ArrayList();
         for (int i = 0; i < cliqueSize; i++) {
             cliques.add(buildClique(params, cliqueAmount, i * cliqueAmount));
         }
+        List<Node> intersectingNodes = new ArrayList<>();
         for (int i = 0; i < outboundLinksPerClique; i++) {
-            // TODO: Add links between cliques
+            intersectingNodes.add(cliques.get(i % cliqueSize).getNodesAsList().get(i / cliqueSize));
         }
-        // TODO: Check UNL Thresh
+        for (int i = 0; i < outboundLinksPerClique - 1; i++) {
+            intersectingNodes.get(i).getUniqueNodeList().add(intersectingNodes.get(i + 1));
+            intersectingNodes.get(i).addLink(new Link(intersectingNodes.get(i + 1).getId(), params.getNextLinkLatency()));
+        }
+        intersectingNodes.get(outboundLinksPerClique - 1).addLink(new Link(intersectingNodes.get(0).getId(), params.getNextLinkLatency()));
         Graph graph = new Graph(cliqueAmount / 3);
         cliques.stream().forEach(clique -> graph.getNodes().addAll(clique.getNodes()));
         return graph;

@@ -2,9 +2,10 @@ package com.sebastiandagostino.graph;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import java.util.Collection;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class GraphBuilderTest {
 
@@ -31,9 +32,21 @@ public class GraphBuilderTest {
     @Test
     public void testGraphBuilder() {
         // TODO: Test
-        // Example: graphSize = 60, cliqueSize = 3, outboundLinks = 6 => cliqueAmount = (60 - 6) / 3 = 54 / 3 = 18
-        Graph graph = GraphBuilder.buildGraph(60, 3, 6, MAX_RANDOM, MAX_RANDOM);
+        int graphSize = 54;
+        int cliqueSize = 3;
+        int outboundLinksPerClique = 6;
+        Graph graph = GraphBuilder.buildGraph(graphSize, cliqueSize, outboundLinksPerClique, MAX_RANDOM, MAX_RANDOM);
         System.out.println(graph);
+
+        assertNotNull(graph);
+        assertEquals(graphSize, graph.getNodes().size());
+        System.out.println(graph.getAllMaximalCliques());
+        //assertEquals(cliqueSize, graph.getAllMaximalCliques().size());
+        int cliqueAmount = graphSize / cliqueSize;
+        int linkAmount = (cliqueAmount - 1) * cliqueSize + outboundLinksPerClique;
+        System.out.println(cliqueAmount);
+        System.out.println((cliqueAmount -1) * cliqueSize);
+        //assertEquals(linkAmount, graph.getNodes().stream().map(Node::getLinks).mapToInt(Collection::size).sum());
     }
 
 }

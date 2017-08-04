@@ -96,8 +96,8 @@ public class Graph {
         Node node = new Node(this.nodes.size(), vote, latency);
         for (Clique clique : filteredCliques) {
             node.getUniqueNodeList().addAll(clique.getNodes());
-            node.getLinks()
-                    .addAll(clique.getNodes().stream().map(unlNode -> new Link(unlNode.getId(), unlNode.getLatency())).collect(Collectors.toList()));
+            node.getLinks().addAll(clique.getNodes()
+                    .stream().map(unlNode -> new Link(unlNode.getId(), unlNode.getLatency())).collect(Collectors.toList()));
         }
         this.nodes.add(node);
     }
