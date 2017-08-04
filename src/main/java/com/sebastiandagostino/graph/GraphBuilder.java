@@ -8,8 +8,15 @@ import java.util.List;
 public class GraphBuilder {
 
     public static void main(String [] args) {
-        if (args.length != 5) {
-            System.err.println("Usage: java -jar GraphBuilder-1.0.jar graphSize cliqueSize outboundLinksPerClique maxNodeLatency maxLinkLatency");
+        if (!(args.length == 5 || args.length == 6)) {
+            System.err.println("The application needs five required integer parameters:");
+            System.err.println("* graphSize") ;
+            System.err.println("* cliqueSize");
+            System.err.println("* outboundLinksPerClique");
+            System.err.println("* maxNodeLatency");
+            System.err.println("* maxLinkLatency");
+            System.err.println("And optionally there is a sixth parameter:");
+            System.err.println("* improve");
             return;
         }
         try {
@@ -19,16 +26,20 @@ public class GraphBuilder {
             int maxNodeLatency = Integer.parseInt(args[3]);
             int maxLinkLatency = Integer.parseInt(args[4]);
             Graph graph = buildGraph(graphSize, cliqueSize, outboundLinksPerClique, maxNodeLatency, maxLinkLatency);
+            if (args.length == 6) {
+                graph.improveConnectivity(Integer.signum(Integer.parseInt(args[5])), maxNodeLatency);
+            }
             System.out.println(graph.toString());
         } catch (NumberFormatException e) {
             System.err.println("Parameters must be integer numbers. Exiting...");
         } catch (IllegalArgumentException e) {
             System.err.println("Parameters must meet all the conditions:");
-            System.err.println("\t graphSize >= cliqueSize");
-            System.err.println("\t outboundLinksPerClique >= cliqueSize");
-            System.err.println("\t cliqueSize >= 1");
-            System.err.println("\t maxNodeLatency >= 0");
-            System.err.println("\t maxLinkLatency >=0");
+            System.err.println("* graphSize >= cliqueSize");
+            System.err.println("* outboundLinksPerClique >= cliqueSize");
+            System.err.println("* cliqueSize >= 1");
+            System.err.println("* maxNodeLatency >= 0");
+            System.err.println("* maxLinkLatency >=0");
+            System.err.println("* improve > 0 || improve < 0");
             System.err.println("Exiting...");
         }
     }

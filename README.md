@@ -28,6 +28,10 @@ The five parameters after the jar file are the following:
 * _Max Node Latency_: must be a positive integer
 * _Max Link Latency_: must be a positive integer
 
+There is another parameter that is optional:
+
+* _Improve_: A positive or negative number to use as vote position in the improvement algorithm
+
 ## Built With
 
 * [Jackson](https://github.com/FasterXML/jackson) - Used to generate JSON streams
