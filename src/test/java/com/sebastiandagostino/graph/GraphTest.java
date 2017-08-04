@@ -48,6 +48,12 @@ public class GraphTest {
         assertEquals(4, cliques.size());
     }
 
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidGraphFromJson() {
+        new Graph("invalid");
+    }
+
     @Test
     public void testGraphFromJsonFile() throws FileNotFoundException {
         ClassLoader classLoader = getClass().getClassLoader();
