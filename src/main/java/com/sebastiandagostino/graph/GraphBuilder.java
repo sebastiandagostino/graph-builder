@@ -16,14 +16,13 @@ public class GraphBuilder {
             cliques.add(buildClique(params, cliqueAmount, i * cliqueAmount));
         }
         List<Node> intersectingNodes = new ArrayList<>();
-        for (int i = 0; i < outboundLinksPerClique; i++) {
+        for (int i = 0; i < outboundLinksPerClique * 2; i++) {
             intersectingNodes.add(cliques.get(i % cliqueSize).getNodesAsList().get(i / cliqueSize));
         }
-        for (int i = 0; i < outboundLinksPerClique - 1; i++) {
-            intersectingNodes.get(i).getUniqueNodeList().add(intersectingNodes.get(i + 1));
-            intersectingNodes.get(i).addLink(new Link(intersectingNodes.get(i + 1).getId(), params.getNextLinkLatency()));
+        for (int i = 0; i < outboundLinksPerClique; i++) {
+            intersectingNodes.get(i*2).getUniqueNodeList().add(intersectingNodes.get(i*2 + 1));
+            intersectingNodes.get(i*2).addLink(new Link(intersectingNodes.get(i*2 + 1).getId(), params.getNextLinkLatency()));
         }
-        intersectingNodes.get(outboundLinksPerClique - 1).addLink(new Link(intersectingNodes.get(0).getId(), params.getNextLinkLatency()));
         Graph graph = new Graph(cliqueAmount / 3);
         cliques.stream().forEach(clique -> graph.getNodes().addAll(clique.getNodes()));
         return graph;

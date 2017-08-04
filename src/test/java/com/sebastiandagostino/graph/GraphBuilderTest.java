@@ -15,8 +15,7 @@ public class GraphBuilderTest {
     public void testCliqueBuilder() {
         int cliqueSize = 20;
         int startNodeId = 15;
-        int maxRandomLatency = 500;
-        LatencyRandomParams params = new LatencyRandomParams(maxRandomLatency, maxRandomLatency);
+        LatencyRandomParams params = new LatencyRandomParams(MAX_RANDOM, MAX_RANDOM);
         Clique clique = GraphBuilder.buildClique(params, cliqueSize, startNodeId);
 
         assertEquals(cliqueSize, clique.getNodes().size());
@@ -29,9 +28,21 @@ public class GraphBuilderTest {
         }
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidCliqueBuilderParameterCliqueSize() {
+        LatencyRandomParams params = new LatencyRandomParams(MAX_RANDOM, MAX_RANDOM);
+        GraphBuilder.buildClique(params, -1, 0);
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidCliqueBuilderParameterStartNodeId() {
+        LatencyRandomParams params = new LatencyRandomParams(MAX_RANDOM, MAX_RANDOM);
+        GraphBuilder.buildClique(params, 10, -1);
+    }
+
     @Test
     public void testGraphBuilder() {
-        // TODO: Test
         int graphSize = 54;
         int cliqueSize = 3;
         int outboundLinksPerClique = 6;
@@ -40,13 +51,24 @@ public class GraphBuilderTest {
 
         assertNotNull(graph);
         assertEquals(graphSize, graph.getNodes().size());
-        System.out.println(graph.getAllMaximalCliques());
-        //assertEquals(cliqueSize, graph.getAllMaximalCliques().size());
-        int cliqueAmount = graphSize / cliqueSize;
-        int linkAmount = (cliqueAmount - 1) * cliqueSize + outboundLinksPerClique;
-        System.out.println(cliqueAmount);
-        System.out.println((cliqueAmount -1) * cliqueSize);
-        //assertEquals(linkAmount, graph.getNodes().stream().map(Node::getLinks).mapToInt(Collection::size).sum());
+        assertTrue(graph.getAllMaximalCliques().size() > outboundLinksPerClique);
+        assertEquals((graphSize / cliqueSize - 1) * graphSize + outboundLinksPerClique,
+                graph.getNodes().stream().map(Node::getLinks).mapToInt(Collection::size).sum());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidGraphBuilderParameterCliqueSize() {
+        GraphBuilder.buildGraph(1, 0, 1, MAX_RANDOM, MAX_RANDOM);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidGraphBuilderParameterOutboundLinksPerClique() {
+        GraphBuilder.buildGraph(1, 1, 0, MAX_RANDOM, MAX_RANDOM);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidGraphBuilderParameter() {
+        GraphBuilder.buildGraph(0, 1, 1, MAX_RANDOM, MAX_RANDOM);
     }
 
 }
