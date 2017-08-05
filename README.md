@@ -14,6 +14,8 @@ As in any Maven project, it may be required to run
 mvn clean install
 ```
 
+## Running
+
 After compilation with Maven, to run it in any console:
 
 ```
