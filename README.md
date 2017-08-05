@@ -32,6 +32,14 @@ There is another parameter that is optional:
 
 * _Improve_: A positive or negative number to use as vote position in the improvement algorithm
 
+Alternatively the application can be run with the following bash script: 
+
+```
+./gb.sh 54 3 6 500 500
+```
+
+This application creates two files (file1.json and file2.json) running the application with the same parameters except that for the second one it runs the improvement algorithm. 
+
 ## Built With
 
 * [Jackson](https://github.com/FasterXML/jackson) - Used to generate JSON streams
