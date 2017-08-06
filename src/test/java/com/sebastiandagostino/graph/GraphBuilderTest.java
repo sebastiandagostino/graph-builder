@@ -43,39 +43,33 @@ public class GraphBuilderTest {
     public void testGraphBuilder() {
         int graphSize = 54;
         int cliqueSize = 3;
-        int outboundLinksPerClique = 6;
-        Graph graph = GraphBuilder.buildGraph(graphSize, cliqueSize, outboundLinksPerClique, MAX_RANDOM, MAX_RANDOM);
+        Graph graph = GraphBuilder.buildGraph(graphSize, cliqueSize, MAX_RANDOM, MAX_RANDOM);
 
         assertNotNull(graph);
         assertEquals(graphSize, graph.getNodes().size());
-        assertTrue(graph.getAllMaximalCliques().size() > outboundLinksPerClique);
-        assertEquals((graphSize / cliqueSize - 1) * graphSize + outboundLinksPerClique,
+        assertTrue(graph.getAllMaximalCliques().size() >= cliqueSize);
+        assertEquals((graphSize / cliqueSize - 1) * graphSize + (cliqueSize - 1),
                 graph.getNodes().stream().map(Node::getLinks).mapToInt(Collection::size).sum());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidGraphBuilderParameterGraphSize() {
-        GraphBuilder.buildGraph(0, 1, 1, MAX_RANDOM, MAX_RANDOM);
+        GraphBuilder.buildGraph(0, 1, MAX_RANDOM, MAX_RANDOM);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidGraphBuilderParameterCliqueSize() {
-        GraphBuilder.buildGraph(1, 0, 1, MAX_RANDOM, MAX_RANDOM);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testInvalidGraphBuilderParameterOutboundLinksPerClique() {
-        GraphBuilder.buildGraph(1, 1, 0, MAX_RANDOM, MAX_RANDOM);
+        GraphBuilder.buildGraph(1, 0, MAX_RANDOM, MAX_RANDOM);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidGraphBuilderParameterMaxNodeLatency() {
-        GraphBuilder.buildGraph(10, 2, 3, -1, MAX_RANDOM);
+        GraphBuilder.buildGraph(10, 2, -1, MAX_RANDOM);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidGraphBuilderParameterMaxLinkLatency() {
-        GraphBuilder.buildGraph(10, 2, 3, MAX_RANDOM, -1);
+        GraphBuilder.buildGraph(10, 2, MAX_RANDOM, -1);
     }
 
 }

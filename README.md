@@ -19,14 +19,13 @@ mvn clean install
 After compilation with Maven, to run it in any console:
 
 ```
-java -jar target/GraphBuilder-1.0-jar-with-dependencies.jar 54 3 6 500 500
+java -jar target/GraphBuilder-1.0-jar-with-dependencies.jar 54 3 500 500
 ```
 
-The five parameters after the jar file are the following:
+The four parameters after the jar file are the following:
 
 * _Graph Size_: must be a positive integer greater than _Clique Size_ 
 * _Clique Size_: must be a positive integer greater than 1
-* _Outbound Links Per Clique_: must be a positive integer greater than _Clique Size_
 * _Max Node Latency_: must be a positive integer
 * _Max Link Latency_: must be a positive integer
 
@@ -37,7 +36,7 @@ There is another parameter that is optional:
 Alternatively the application can be run with the following bash script: 
 
 ```
-./gb.sh 54 3 6 500 500
+./gb.sh 54 3 500 500
 ```
 
 This application creates two files (file1.json and file2.json) running the application with the same parameters except that for the second one it runs the improvement algorithm. 

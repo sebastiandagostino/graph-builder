@@ -8,11 +8,10 @@ import java.util.List;
 public class GraphBuilder {
 
     public static void main(String [] args) {
-        if (!(args.length == 5 || args.length == 6)) {
+        if (!(args.length == 4 || args.length == 5)) {
             System.err.println("The application needs five required integer parameters:");
             System.err.println("* graphSize") ;
             System.err.println("* cliqueSize");
-            System.err.println("* outboundLinksPerClique");
             System.err.println("* maxNodeLatency");
             System.err.println("* maxLinkLatency");
             System.err.println("And optionally there is a sixth parameter:");
@@ -22,12 +21,11 @@ public class GraphBuilder {
         try {
             int graphSize = Integer.parseInt(args[0]);
             int cliqueSize = Integer.parseInt(args[1]);
-            int outboundLinksPerClique = Integer.parseInt(args[2]);
-            int maxNodeLatency = Integer.parseInt(args[3]);
-            int maxLinkLatency = Integer.parseInt(args[4]);
-            Graph graph = buildGraph(graphSize, cliqueSize, outboundLinksPerClique, maxNodeLatency, maxLinkLatency);
-            if (args.length == 6) {
-                graph.improveConnectivity(Integer.signum(Integer.parseInt(args[5])), maxNodeLatency);
+            int maxNodeLatency = Integer.parseInt(args[2]);
+            int maxLinkLatency = Integer.parseInt(args[3]);
+            Graph graph = buildGraph(graphSize, cliqueSize, maxNodeLatency, maxLinkLatency);
+            if (args.length == 5) {
+                graph.improveConnectivity(Integer.signum(Integer.parseInt(args[4])), maxNodeLatency);
             }
             System.out.println(graph.toString());
         } catch (NumberFormatException e) {
@@ -35,7 +33,6 @@ public class GraphBuilder {
         } catch (IllegalArgumentException e) {
             System.err.println("Parameters must meet all the conditions:");
             System.err.println("* graphSize >= cliqueSize");
-            System.err.println("* outboundLinksPerClique >= cliqueSize");
             System.err.println("* cliqueSize >= 1");
             System.err.println("* maxNodeLatency >= 0");
             System.err.println("* maxLinkLatency >=0");
@@ -44,9 +41,9 @@ public class GraphBuilder {
         }
     }
 
-    public static Graph buildGraph(int graphSize, int cliqueSize, int outboundLinksPerClique, int maxNodeLatency, int maxLinkLatency) {
+    public static Graph buildGraph(int graphSize, int cliqueSize, int maxNodeLatency, int maxLinkLatency) {
         Validate.isTrue(maxNodeLatency >= 0 && maxLinkLatency >=0);
-        Validate.isTrue(graphSize >= cliqueSize && outboundLinksPerClique >= cliqueSize && cliqueSize >= 1);
+        Validate.isTrue(graphSize >= cliqueSize && cliqueSize >= 1);
         int cliqueAmount = graphSize / cliqueSize;
         LatencyRandomParams params = new LatencyRandomParams(maxNodeLatency, maxLinkLatency);
         List<Clique> cliques = new ArrayList();
@@ -54,12 +51,12 @@ public class GraphBuilder {
             cliques.add(buildClique(params, cliqueAmount, i * cliqueAmount));
         }
         List<Node> intersectingNodes = new ArrayList<>();
-        for (int i = 0; i < outboundLinksPerClique * 2; i++) {
-            intersectingNodes.add(cliques.get(i % cliqueSize).getNodesAsList().get(i / cliqueSize));
+        for (int i = 0; i < cliqueSize; i++) {
+            intersectingNodes.add(cliques.get(i).getNodesAsList().get(i));
         }
-        for (int i = 0; i < outboundLinksPerClique; i++) {
-            intersectingNodes.get(i*2).getUniqueNodeList().add(intersectingNodes.get(i*2 + 1));
-            intersectingNodes.get(i*2).addLink(new Link(intersectingNodes.get(i*2 + 1).getId(), params.getNextLinkLatency()));
+        for (int i = 0; i < cliqueSize - 1; i++) {
+            intersectingNodes.get(i).getUniqueNodeList().add(intersectingNodes.get(i + 1));
+            intersectingNodes.get(i).addLink(new Link(intersectingNodes.get(i + 1).getId(), params.getNextLinkLatency()));
         }
         Graph graph = new Graph(cliqueAmount / 3);
         cliques.stream().forEach(clique -> graph.getNodes().addAll(clique.getNodes()));
