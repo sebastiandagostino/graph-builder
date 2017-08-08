@@ -31,7 +31,7 @@ The four parameters after the jar file are the following:
 
 There is another parameter that is optional:
 
-* _Improve_: A positive or negative number to use as vote position in the improvement algorithm
+* _Additional Nodes_: must be positive number to use as amount of new nodes in the improvement algorithm
 
 Alternatively the application can be run with the following bash script: 
 
@@ -39,7 +39,7 @@ Alternatively the application can be run with the following bash script:
 ./gb.sh 54 3 500 500
 ```
 
-This application creates two files (file1.json and file2.json) running the application with the same parameters except that for the second one it runs the improvement algorithm. 
+This application creates two files (file1.json and file2.json) running the application with the same parameters except that for the second one it runs the improvement algorithm with 8% (a parameter in the bash script) of additional nodes. 
 
 ## Built With
 

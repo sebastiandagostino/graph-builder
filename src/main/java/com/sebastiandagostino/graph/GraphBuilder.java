@@ -25,7 +25,7 @@ public class GraphBuilder {
             int maxLinkLatency = Integer.parseInt(args[3]);
             Graph graph = buildGraph(graphSize, cliqueSize, maxNodeLatency, maxLinkLatency);
             if (args.length == 5) {
-                graph.improveConnectivity(Integer.signum(Integer.parseInt(args[4])), maxNodeLatency);
+                graph.improveConnectivity(Integer.parseInt(args[4]), maxNodeLatency);
             }
             System.out.println(graph.toString());
         } catch (NumberFormatException e) {
@@ -35,8 +35,8 @@ public class GraphBuilder {
             System.err.println("* graphSize >= cliqueSize");
             System.err.println("* cliqueSize >= 1");
             System.err.println("* maxNodeLatency >= 0");
-            System.err.println("* maxLinkLatency >=0");
-            System.err.println("* improve > 0 || improve < 0");
+            System.err.println("* maxLinkLatency >= 0");
+            System.err.println("* additionalNodes > 0 && additionalNodes < graphSize");
             System.err.println("Exiting...");
         }
     }

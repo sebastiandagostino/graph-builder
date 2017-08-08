@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sebastiandagostino.graph.json.GraphJsonMapping;
 import com.sebastiandagostino.graph.json.LinkJsonMapping;
 import com.sebastiandagostino.graph.json.NodeJsonMapping;
+import org.apache.commons.lang3.Validate;
 import org.jgrapht.alg.BronKerboschCliqueFinder;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
@@ -90,16 +91,22 @@ public class Graph {
     /**
      * This applies the algorithm
      */
-    public void improveConnectivity(int vote, int latency) {
+    public void improveConnectivity(int nodeAmount, int latency) {
+        Validate.isTrue(0 <= latency);
+        Validate.isTrue(0 < nodeAmount && nodeAmount < this.getNodes().size());
         List<Clique> cliques = this.getAllMaximalCliques();
         List<Clique> filteredCliques = Clique.filterIntersectingNodesFromCliques(cliques);
-        Node node = new Node(this.nodes.size(), vote, latency);
-        for (Clique clique : filteredCliques) {
-            node.getUniqueNodeList().addAll(clique.getNodes());
-            node.getLinks().addAll(clique.getNodes()
-                    .stream().map(unlNode -> new Link(unlNode.getId(), unlNode.getLatency())).collect(Collectors.toList()));
+        for (int i = 0; i < nodeAmount; i++) {
+            int vote = i % 2 == 0 ? 1 : -1;
+            Node node = new Node(this.getNodes().size(), vote, latency);
+            for (Clique clique : filteredCliques) {
+                node.getUniqueNodeList().addAll(clique.getNodes());
+                node.getLinks().addAll(clique.getNodes()
+                        .stream().map(unlNode -> new Link(unlNode.getId(), unlNode.getLatency())).collect(Collectors.toList()));
+                //clique.getNodes().stream().findAny().get().getUniqueNodeList().add(node);
+            }
+            this.nodes.add(node);
         }
-        this.nodes.add(node);
     }
 
     /**

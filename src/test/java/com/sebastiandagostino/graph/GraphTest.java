@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -88,11 +89,11 @@ public class GraphTest {
     @Test
     public void testImproveConnectivity() {
         int size = this.tinyGraph.getNodes().size();
-        int vote = -1;
         int latency = this.params.getNextNodeLatency();
-        this.tinyGraph.improveConnectivity(vote, latency);
+        int nodeAmount = 1;
+        this.tinyGraph.improveConnectivity(nodeAmount, latency);
 
-        assertEquals(size + 1, this.tinyGraph.getNodes().size());
+        assertEquals(size + nodeAmount, this.tinyGraph.getNodes().size());
     }
 
     @Test
@@ -102,12 +103,13 @@ public class GraphTest {
         String jsonInputString = new Scanner(file).useDelimiter("\\Z").next();
 
         Graph graph = new Graph(jsonInputString);
+        double percentage = 0.08;
         int size = graph.getNodes().size();
-        int vote = -1;
+        int nodeAmount = (int) (percentage * graph.getNodes().size());
         int latency = this.params.getNextNodeLatency();
-        graph.improveConnectivity(vote, latency);
+        graph.improveConnectivity(nodeAmount, latency);
 
-        assertEquals(size + 1, graph.getNodes().size());
+        assertEquals((int) ((1 + percentage) * size), graph.getNodes().size());
     }
 
 }
