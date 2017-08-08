@@ -15,7 +15,7 @@ public class GraphBuilder {
             System.err.println("* maxNodeLatency");
             System.err.println("* maxLinkLatency");
             System.err.println("And optionally there is a sixth parameter:");
-            System.err.println("* improve");
+            System.err.println("* additionalNodes (for the improvement algorithm)");
             return;
         }
         try {
@@ -52,6 +52,7 @@ public class GraphBuilder {
         }
         List<Node> intersectingNodes = new ArrayList<>();
         for (int i = 0; i < cliqueSize; i++) {
+            // TODO: Check range for "i" inside clique nodes list
             intersectingNodes.add(cliques.get(i).getNodesAsList().get(i));
         }
         for (int i = 0; i < cliqueSize - 1; i++) {
