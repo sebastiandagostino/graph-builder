@@ -56,6 +56,7 @@ public class GraphBuilder {
                 intersectingNodes.add(cliques.get(i).getNodesAsList().get(j));
             }
         }
+        // TODO: Remove this loop and replace with a random list of links with the size of the UNL
         for (int i = 0; i < cliqueSize - 1; i++) {
             intersectingNodes.get(i).getUniqueNodeList().add(intersectingNodes.get(i + 1));
             intersectingNodes.get(i).addLink(new Link(intersectingNodes.get(i + 1).getId(), params.getNextLinkLatency()));
