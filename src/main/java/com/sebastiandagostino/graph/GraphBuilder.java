@@ -51,9 +51,10 @@ public class GraphBuilder {
             cliques.add(buildClique(params, cliqueAmount, i * cliqueAmount));
         }
         List<Node> intersectingNodes = new ArrayList<>();
-        for (int i = 0; i < cliqueSize; i++) {
-            // TODO: Check range for "i" inside clique nodes list
-            intersectingNodes.add(cliques.get(i).getNodesAsList().get(i));
+        for (int j = 0; j < cliqueAmount; j++) {
+            for (int i = 0; i < cliqueSize; i++) {
+                intersectingNodes.add(cliques.get(i).getNodesAsList().get(j));
+            }
         }
         for (int i = 0; i < cliqueSize - 1; i++) {
             intersectingNodes.get(i).getUniqueNodeList().add(intersectingNodes.get(i + 1));
