@@ -4,8 +4,13 @@ import org.apache.commons.lang3.Validate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class GraphBuilder {
+
+    public static final int LINK_RANDOM_SEED = 111111111;
+
+    private static Random linkRandom = new Random(LINK_RANDOM_SEED);
 
     public static void main(String [] args) {
         if (!(args.length == 4 || args.length == 5)) {
@@ -56,10 +61,9 @@ public class GraphBuilder {
                 intersectingNodes.add(cliques.get(i).getNodesAsList().get(j));
             }
         }
-        // TODO: Remove this loop and replace with a random list of links with the size of the UNL
         for (int i = 0; i < cliqueSize - 1; i++) {
             intersectingNodes.get(i).getUniqueNodeList().add(intersectingNodes.get(i + 1));
-            intersectingNodes.get(i).addLink(new Link(intersectingNodes.get(i + 1).getId(), params.getNextLinkLatency()));
+            intersectingNodes.get(i).addLink(new Link(linkRandom.nextInt(graphSize), params.getNextLinkLatency()));
         }
         Graph graph = new Graph(cliqueAmount / 3);
         cliques.stream().forEach(clique -> graph.getNodes().addAll(clique.getNodes()));

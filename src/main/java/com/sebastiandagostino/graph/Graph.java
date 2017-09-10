@@ -10,17 +10,12 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Graph {
 
     public static final int DEFAULT_UNL_THRESH = 3;
-
-    public static final double UNL_INTERSECTION_PERCENTAGE = 0.2;
 
     private final List<Node> nodes;
 
@@ -88,6 +83,14 @@ public class Graph {
                 .collect(Collectors.toList());
     }
 
+    public static final int LINK_RANDOM_SEED = 222222222;
+
+    private static Random linkRandom = new Random(LINK_RANDOM_SEED);
+
+    public static final int LINK_LATENCY_SEED = 333333333;
+
+    private static Random linkLatencyRandom = new Random(LINK_LATENCY_SEED);
+
     /**
      * This applies the algorithm
      */
@@ -96,14 +99,16 @@ public class Graph {
         Validate.isTrue(0 < nodeAmount && nodeAmount < this.getNodes().size());
         List<Clique> cliques = this.getAllMaximalCliques();
         List<Clique> filteredCliques = Clique.filterIntersectingNodesFromCliques(cliques);
+        int graphSize = this.getNodes().size();
         for (int i = 0; i < nodeAmount; i++) {
             int vote = i % 2 == 0 ? 1 : -1;
             Node node = new Node(this.getNodes().size(), vote, latency);
             for (Clique clique : filteredCliques) {
                 node.getUniqueNodeList().addAll(clique.getNodes());
-                node.getLinks().addAll(clique.getNodes()
-                        .stream().map(unlNode -> new Link(unlNode.getId(), unlNode.getLatency())).collect(Collectors.toList()));
-                //clique.getNodes().stream().findAny().get().getUniqueNodeList().add(node);
+            }
+            int unlSize = node.getUniqueNodeList().size();
+            for (int j = 0; j < unlSize; j++) {
+                node.getLinks().add(new Link(linkRandom.nextInt(graphSize), linkLatencyRandom.nextInt(latency)));
             }
             this.nodes.add(node);
         }
@@ -123,6 +128,8 @@ public class Graph {
     public String toString() {
         return (new GraphJsonMapping(this, this.getUnlThresh())).toString();
     }
+
+    public static final double UNL_INTERSECTION_PERCENTAGE = 0.2;
 
     public void calculateForkPossibility() {
         // TODO: Needs refactoring - unused method
