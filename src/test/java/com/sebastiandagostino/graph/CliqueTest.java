@@ -1,5 +1,7 @@
 package com.sebastiandagostino.graph;
 
+import com.sebastiandagostino.graph.builder.Clique;
+import com.sebastiandagostino.graph.builder.Node;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package com.sebastiandagostino.graph;
+package com.sebastiandagostino.graph.builder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sebastiandagostino.graph.json.GraphJsonMapping;

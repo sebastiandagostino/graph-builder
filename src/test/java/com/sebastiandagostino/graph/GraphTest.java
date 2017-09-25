@@ -1,5 +1,6 @@
 package com.sebastiandagostino.graph;
 
+import com.sebastiandagostino.graph.builder.*;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;

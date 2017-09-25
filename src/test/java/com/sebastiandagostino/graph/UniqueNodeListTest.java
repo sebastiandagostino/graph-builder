@@ -1,5 +1,7 @@
 package com.sebastiandagostino.graph;
 
+import com.sebastiandagostino.graph.builder.Node;
+import com.sebastiandagostino.graph.builder.UniqueNodeList;
 import org.junit.Before;
 import org.junit.Test;
 

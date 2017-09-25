@@ -1,4 +1,4 @@
-package com.sebastiandagostino.graph;
+package com.sebastiandagostino.graph.builder;
 
 import java.util.*;
 import java.util.stream.Collectors;

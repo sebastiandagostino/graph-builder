@@ -1,5 +1,6 @@
 package com.sebastiandagostino.graph;
 
+import com.sebastiandagostino.graph.builder.*;
 import org.junit.Test;
 
 import java.util.Collection;

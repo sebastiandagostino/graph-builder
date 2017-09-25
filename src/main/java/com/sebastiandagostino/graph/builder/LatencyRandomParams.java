@@ -1,4 +1,4 @@
-package com.sebastiandagostino.graph;
+package com.sebastiandagostino.graph.builder;
 
 import org.apache.commons.lang3.Validate;
 
