@@ -1,5 +1,6 @@
 package com.sebastiandagostino.graph.simulator;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class Link {
@@ -16,6 +17,7 @@ public class Link {
         this.toNodeId = toNodeId;
         this.totalLatency = totalLatency;
         this.sendTime = 0;
+        this.messages = new LinkedList<>();
     }
 
     public int getToNodeId() {
@@ -40,10 +42,6 @@ public class Link {
 
     public List<Message> getMessages() {
         return this.messages;
-    }
-
-    void setMessages(List<Message> messages) {
-        this.messages = messages;
     }
 
 }

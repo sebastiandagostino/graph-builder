@@ -27,9 +27,9 @@ public class Node {
 
     private List<Link> links;
 
-    private List<Integer> nodeTimeStamps;
+    private Integer[] nodeTimeStamps;
 
-    private List<Integer> nodeStates;
+    private Integer[] nodeStates;
 
     private int messagesSent;
 
@@ -42,8 +42,8 @@ public class Node {
         this.latency = latency;
         this.uniqueNodeList = new ArrayList<>();
         this.links = new ArrayList<>();
-        this.nodeTimeStamps = new ArrayList<>(numNodes);
-        this.nodeStates = new ArrayList<>(numNodes);
+        this.nodeTimeStamps = new Integer[numNodes];
+        this.nodeStates = new Integer[numNodes];
         this.messagesSent = 0;
         this.messagesReceived = 0;
         this.vote = 0;
@@ -73,11 +73,11 @@ public class Node {
         return links;
     }
 
-    public List<Integer> getNodeTimeStamps() {
+    public Integer[] getNodeTimeStamps() {
         return nodeTimeStamps;
     }
 
-    public List<Integer> getNodeStates() {
+    public Integer[] getNodeStates() {
         return nodeStates;
     }
 
@@ -170,12 +170,14 @@ public class Node {
         Map<Integer, NodeState> changes = new HashMap<>();
 
         for (Map.Entry<Integer, NodeState> chgIt : message.getData().entrySet()) {
+            int nodeStateValue = nodeStates[chgIt.getKey()] != null ? nodeStates[chgIt.getKey()] : 0;
+            int nodeTimeStampValue = nodeTimeStamps[chgIt.getKey()] != null ? nodeTimeStamps[chgIt.getKey()] : 0;
             if ((chgIt.getKey() != nodeId)
-                    && (nodeStates.get(chgIt.getKey()) != chgIt.getValue().getState())
-                    && (chgIt.getValue().getTimeStamp() > nodeTimeStamps.get(chgIt.getKey()))) {
+                    && (nodeStateValue != chgIt.getValue().getState())
+                    && (chgIt.getValue().getTimeStamp() > nodeTimeStampValue)) {
                 // This gives us new information about a node
-                nodeStates.set(chgIt.getKey(), chgIt.getValue().getState());
-                nodeTimeStamps.set(chgIt.getKey(), chgIt.getValue().getTimeStamp());
+                nodeStates[chgIt.getKey()] = chgIt.getValue().getState();
+                nodeTimeStamps[chgIt.getKey()] = chgIt.getValue().getTimeStamp();
                 changes.put(chgIt.getKey(), chgIt.getValue());
             }
         }
@@ -188,11 +190,11 @@ public class Node {
         int unlCount = 0;
         int unlBalance = 0;
         for (int node : uniqueNodeList) {
-            if (nodeStates.get(node) == 1) {
+            if (nodeStates[node] == 1) {
                 unlCount++;
                 unlBalance++;
             }
-            if (nodeStates.get(node) == -1) {
+            if (nodeStates[node] == -1) {
                 unlCount++;
                 unlBalance--;
             }
@@ -208,19 +210,17 @@ public class Node {
 
         boolean positionChange = false;
         if (unlCount >= unlThresh) { // We have enough data to make decisions
-            if ((nodeStates.get(nodeId) == 1) && (unlBalance < (-SELF_WEIGHT))) {
+            if ((nodeStates[nodeId] == 1) && (unlBalance < (-SELF_WEIGHT))) {
                 // we switch to -
-                nodeStates.set(nodeId, -1);
+                nodeStates[nodeId] = -1;
                 vote = -1;
-                nodeTimeStamps.set(nodeId, nodeTimeStamps.get(nodeId) + 1);
-                changes.put(nodeId, new NodeState(nodeId, nodeTimeStamps.get(nodeId), -1));
+                changes.put(nodeId, new NodeState(nodeId, ++nodeTimeStamps[nodeId], -1));
                 positionChange = true;
-            } else if ((nodeStates.get(nodeId) == -1) && (unlBalance > SELF_WEIGHT)) {
+            } else if ((nodeStates[nodeId] == -1) && (unlBalance > SELF_WEIGHT)) {
                 // we switch to +
-                nodeStates.set(nodeId, 1);
+                nodeStates[nodeId] = 1;
                 vote = 1;
-                nodeTimeStamps.set(nodeId, nodeTimeStamps.get(nodeId) + 1);
-                changes.put(nodeId, new NodeState(nodeId, nodeTimeStamps.get(nodeId), +1));
+                changes.put(nodeId, new NodeState(nodeId, ++nodeTimeStamps[nodeId], +1));
                 positionChange = true;
             }
         }

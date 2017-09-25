@@ -1,7 +1,7 @@
 package com.sebastiandagostino.graph.simulator;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class Network {
 
@@ -11,7 +11,7 @@ public class Network {
 
     public Network() {
         this.masterTime = 0;
-        this.messages = new HashMap<>();
+        this.messages = new TreeMap<>();
     }
 
     public int getMasterTime() {
@@ -24,10 +24,15 @@ public class Network {
 
     public void sendMessage(Message message, Link link, int sendTime) {
         assert(message.getToNodeId() == link.getToNodeId());
+
         link.setSendTime(sendTime);
-        Event event = messages.get(link.getReceiveTime());
+
+        Event event = new Event();
         event.addMessage(message);
-        link.setMessages(event.getMessages());
+
+        messages.put(link.getReceiveTime(), event);
+
+        link.getMessages().addAll(event.getMessages());
     }
 
     public int countMessages() {

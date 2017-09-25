@@ -33,7 +33,7 @@ public class GraphSimulator {
         ObjectMapper mapper = new ObjectMapper();
         GraphJsonMapping json = null;
         try {
-            json = mapper.readValue(new File("c:\\file.json"), GraphJsonMapping.class);
+            json = mapper.readValue(new File(fileName), GraphJsonMapping.class);
         } catch (IOException e) {
             System.err.println("Unable to read or parse json file. Exiting...");
         }
@@ -48,7 +48,7 @@ public class GraphSimulator {
 
         // Create nodes
         System.out.println("Creating nodes");
-        List<Node> nodes = new ArrayList<>(numNodes);
+        Node[] nodes = new Node[numNodes];
 
         for (NodeJsonMapping node : json.getNodes()) {
             // NodeIds must be from 0 until numNodes - 1
@@ -56,14 +56,14 @@ public class GraphSimulator {
             int vote = node.getVote();
             int latency = node.getLatency();
             Node newNode = new Node(nodeId, numNodes, latency);
-            nodes.set(nodeId, newNode);
-            newNode.getNodeStates().set(nodeId, vote);
-            newNode.getNodeTimeStamps().set(nodeId, 1);
+            nodes[nodeId] = newNode;
+            newNode.getNodeStates()[nodeId] = vote;
+            newNode.getNodeTimeStamps()[nodeId] = 1;
             newNode.setVote(vote);
 
             // Build our UNL
             for (Integer unlNode : node.getUniqueNodeList()) {
-                nodes.get(nodeId).getUniqueNodeList().add(unlNode);
+                nodes[nodeId].getUniqueNodeList().add(unlNode);
             }
         }
 
@@ -74,9 +74,9 @@ public class GraphSimulator {
             int i = link.getFrom();
             int lt = link.getTo();
             int latency = link.getLatency();
-            int ll = nodes.get(i).getLatency() + nodes.get(lt).getLatency() + latency;
-            nodes.get(i).getLinks().add(new Link(lt, ll));
-            nodes.get(lt).getLinks().add(new Link(i, ll));
+            int ll = nodes[i].getLatency() + nodes[lt].getLatency() + latency;
+            nodes[i].getLinks().add(new Link(lt, ll));
+            nodes[lt].getLinks().add(new Link(i, ll));
         }
 
         Network network = new Network();
@@ -86,7 +86,7 @@ public class GraphSimulator {
         for (Node node : nodes) {
             for (Link link : node.getLinks()) {
                 Message message = new Message(node.getNodeId(), link.getToNodeId());
-                message.insertData(node.getNodeId(), node.getNodeStates().get(node.getNodeId()));
+                message.insertData(node.getNodeId(), node.getNodeStates()[node.getNodeId()]);
                 network.sendMessage(message, link, 0);
             }
 
@@ -128,9 +128,9 @@ public class GraphSimulator {
             for (Message message : event.getValue().getMessages()) {
                 if (message.hasEmptyData()) {
                     // Message was never sent
-                    nodes.get(message.getFromNodeId()).decreaseMessagesSent();
+                    nodes[message.getFromNodeId()].decreaseMessagesSent();
                 } else {
-                    nodes.get(message.getToNodeId()).receiveMessage(message, network, unlThresh);
+                    nodes[message.getToNodeId()].receiveMessage(message, network, unlThresh);
                 }
             }
 
