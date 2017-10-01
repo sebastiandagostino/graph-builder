@@ -8,8 +8,6 @@ import com.sebastiandagostino.graph.simulator.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class GraphSimulator {
@@ -36,6 +34,7 @@ public class GraphSimulator {
             json = mapper.readValue(new File(fileName), GraphJsonMapping.class);
         } catch (IOException e) {
             System.err.println("Unable to read or parse json file. Exiting...");
+            return;
         }
 
         // Read parameters and network from json file
@@ -94,8 +93,8 @@ public class GraphSimulator {
         System.out.println("Created " + network.countMessages() + " events");
 
         // Run simulation
-        System.out.println("      Time (ms)\t    Positive\t    Negative");
-        System.out.println("      ---------\t    --------\t    --------");
+        System.out.println("\tTime (ms)\tPositive\tNegative");
+        System.out.println("\t---------\t--------\t--------");
         do {
             int nodesPositive = 0;
             int nodesNegative = 0;
@@ -121,7 +120,7 @@ public class GraphSimulator {
 
             Map.Entry<Integer, Event> event = network.getMessages().entrySet().stream().findFirst().get();
             if ((event.getKey() / 100) > (network.getMasterTime() / 100)) {
-                System.out.println("\t" + event.getKey() + ";\t\t" + nodesPositive + ";\t\t" + nodesNegative);
+                System.out.println("\t\t" + event.getKey() + ";\t\t" + nodesPositive + ";\t\t" + nodesNegative);
             }
             network.setMasterTime(event.getKey());
 
