@@ -19,24 +19,24 @@ public class Node {
     // simulates non-infinite bandwidth
     public static final int PACKETS_ON_WIRE = 3;
 
-    private int nodeId;
+    private int id;
 
-    private int latency; // E2C - End to core latency, the latency from a node to a nearby node
+    private int latency; // E2C - End to core latency, the latency from a node to a nearby
+
+    private NodeState.Vote vote;
+
+    private int timestamp;
 
     private List<Integer> uniqueNodeList;
 
     private List<Link> links;
 
-    private int timestamp;
-
     private int messagesSent;
 
     private int messagesReceived;
 
-    private NodeState.Vote vote;
-
-    public Node(int nodeId, int latency, NodeState.Vote vote) {
-        this.nodeId = nodeId;
+    public Node(int id, int latency, NodeState.Vote vote) {
+        this.id = id;
         this.latency = latency;
         this.vote = vote;
         this.timestamp = 1;
@@ -46,8 +46,8 @@ public class Node {
         this.messagesReceived = 0;
     }
 
-    public int getNodeId() {
-        return nodeId;
+    public int getId() {
+        return id;
     }
 
     public int getLatency() {
@@ -112,8 +112,10 @@ public class Node {
         this.vote = vote;
     }
 
-    public void receiveMessage(Message message, Network network, Node[] nodes, int unlThresh) {
+    public void receiveMessage(Message message, Network network, int unlThresh) {
         messagesReceived++;
+
+        Map<Integer, Node> nodes = network.getNodes();
 
         // If we were going to send any of this data to that node, skip it
         for (Link link : links) {
@@ -127,14 +129,14 @@ public class Node {
         // 1) Update our knowledge
         Map<Integer, NodeState> changes = new HashMap<>();
 
-        for (Map.Entry<Integer, NodeState> chgIt : message.getData().entrySet()) {
-            if ((chgIt.getKey() != nodeId)
-                    && (nodes[chgIt.getKey()].getVote() != chgIt.getValue().getState())
-                    && (chgIt.getValue().getTimestamp() > nodes[chgIt.getKey()].getTimestamp())) {
+        for (Map.Entry<Integer, NodeState> change : message.getData().entrySet()) {
+            if ((change.getKey() != id)
+                    && (nodes.get(change.getKey()).getVote() != change.getValue().getState())
+                    && (change.getValue().getTimestamp() > nodes.get(change.getKey()).getTimestamp())) {
                 // This gives us new information about a node
-                nodes[chgIt.getKey()].setVote(chgIt.getValue().getState());
-                nodes[chgIt.getKey()].setTimestamp(chgIt.getValue().getTimestamp());
-                changes.put(chgIt.getKey(), chgIt.getValue());
+                nodes.get(change.getKey()).setVote(change.getValue().getState());
+                nodes.get(change.getKey()).setTimestamp(change.getValue().getTimestamp());
+                changes.put(change.getKey(), change.getValue());
             }
         }
 
@@ -146,17 +148,17 @@ public class Node {
         int unlCount = 0;
         int unlBalance = 0;
         for (int node : uniqueNodeList) {
-            if (nodes[node].getVote() == NodeState.Vote.POSITIVE) {
+            if (nodes.get(node).getVote() == NodeState.Vote.POSITIVE) {
                 unlCount++;
                 unlBalance++;
             }
-            if (nodes[node].getVote() == NodeState.Vote.NEGATIVE) {
+            if (nodes.get(node).getVote() == NodeState.Vote.NEGATIVE) {
                 unlCount++;
                 unlBalance--;
             }
         }
 
-        if (nodeId < NUM_MALICIOUS_NODES)  {
+        if (id < NUM_MALICIOUS_NODES)  {
             // if we are a malicious node, be contrarian
             unlBalance = -unlBalance;
         }
@@ -166,19 +168,17 @@ public class Node {
 
         boolean positionChange = false;
         if (unlCount >= unlThresh) { // We have enough data to make decisions
-            if ((nodes[nodeId].getVote() == NodeState.Vote.POSITIVE) && (unlBalance < (-SELF_WEIGHT))) {
+            if ((nodes.get(id).getVote() == NodeState.Vote.POSITIVE) && (unlBalance < (-SELF_WEIGHT))) {
                 // we switch to -
-                nodes[nodeId].setVote(NodeState.Vote.NEGATIVE);
-                //vote = -1;
-                nodes[nodeId].incrementTimestamp();
-                changes.put(nodeId, new NodeState(nodeId, nodes[nodeId].getTimestamp(), NodeState.Vote.NEGATIVE));
+                nodes.get(id).setVote(NodeState.Vote.NEGATIVE);
+                nodes.get(id).incrementTimestamp();
+                changes.put(id, new NodeState(id, nodes.get(id).getTimestamp(), NodeState.Vote.NEGATIVE));
                 positionChange = true;
-            } else if ((nodes[nodeId].getVote() == NodeState.Vote.NEGATIVE) && (unlBalance > SELF_WEIGHT)) {
+            } else if ((nodes.get(id).getVote() == NodeState.Vote.NEGATIVE) && (unlBalance > SELF_WEIGHT)) {
                 // we switch to +
-                nodes[nodeId].setVote(NodeState.Vote.POSITIVE);
-                //vote = 1;
-                nodes[nodeId].incrementTimestamp();
-                changes.put(nodeId, new NodeState(nodeId, nodes[nodeId].getTimestamp(), NodeState.Vote.POSITIVE));
+                nodes.get(id).setVote(NodeState.Vote.POSITIVE);
+                nodes.get(id).incrementTimestamp();
+                changes.put(id, new NodeState(id, nodes.get(id).getTimestamp(), NodeState.Vote.POSITIVE));
                 positionChange = true;
             }
         }
@@ -198,7 +198,7 @@ public class Node {
                         if (link.getReceiveTime() > sendTime) // a packet is on the wire
                             sendTime += link.getTotalLatency() / PACKETS_ON_WIRE; // wait a bit extra to send
                     }
-                    network.sendMessage(new Message(nodeId, link.getToNodeId(), changes), link, sendTime);
+                    network.sendMessage(new Message(id, link.getToNodeId(), changes), link, sendTime);
                     messagesSent++;
                 }
             }

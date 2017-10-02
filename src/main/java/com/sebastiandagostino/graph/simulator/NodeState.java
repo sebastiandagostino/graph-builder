@@ -7,7 +7,14 @@ public class NodeState {
 
     public enum Vote {
         POSITIVE,
-        NEGATIVE
+        NEGATIVE;
+
+        public static Vote fromInteger(int vote) {
+            if (vote > 0) {
+                return POSITIVE;
+            }
+            return NEGATIVE;
+        }
     }
 
     private int nodeId;
