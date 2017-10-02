@@ -84,6 +84,14 @@ public class Network {
         return messageCount;
     }
 
+    public int countMessagesSent() {
+        int count = 0;
+        for (Node node : getNodes().values()) {
+            count += node.getMessagesSent();
+        }
+        return count;
+    }
+
     public Collection<Event> getMessages() {
         return messages;
     }

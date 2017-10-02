@@ -16,6 +16,7 @@ public class GraphSimulator {
     // E2C - End to core, the latency from a node to a nearby node
     // C2C - Core to core, the additional latency when nodes are far
 
+    // TODO: Create application configuration with this constant and the ones in the Node class
     public static final int CONSENSUS_PERCENT = 80;
 
     public static void main(String [] args) {
@@ -24,7 +25,7 @@ public class GraphSimulator {
         if (args.length == 1) {
             fileName = args[0];
         } else {
-            System.err.println("usage: sim input_file");
+            System.err.println("Simulator requires only one parameter providing the filename where data is");
             return;
         }
 
@@ -40,6 +41,7 @@ public class GraphSimulator {
         // Read parameters and network from json file
         System.out.println("Loading network from file: " + fileName);
 
+        // TODO: Remove NUM_NODES from JSON since it is no longer necessary
         int numNodes = json.getNodes().size();
         System.out.println("Reading NUM_NODES = " + numNodes);
         int unlThresh = json.getUnlThresh();
@@ -50,12 +52,9 @@ public class GraphSimulator {
         HashMap<Integer, Node> nodes = new HashMap<>();
 
         for (NodeJsonMapping node : json.getNodes()) {
-            // NodeIds must be from 0 until numNodes - 1
+            // TODO: Add validation that all nodeIds must be different
             int nodeId = node.getNodeId();
-            NodeState.Vote vote = NodeState.Vote.fromInteger(node.getVote());
-            int latency = node.getLatency();
-            Node newNode = new Node(nodeId, latency, vote);
-            nodes.put(nodeId, newNode);
+            nodes.put(nodeId, new Node(nodeId, node.getLatency(), NodeState.Vote.fromInteger(node.getVote())));
 
             // Build our UNL
             for (Integer unlNode : node.getUniqueNodeList()) {
@@ -67,12 +66,11 @@ public class GraphSimulator {
         System.out.println("Creating links");
 
         for (LinkJsonMapping link : json.getLinks()) {
-            int i = link.getFrom();
-            int lt = link.getTo();
-            int latency = link.getLatency();
-            int ll = nodes.get(i).getLatency() + nodes.get(lt).getLatency() + latency;
-            nodes.get(i).getLinks().add(new Link(lt, ll));
-            nodes.get(lt).getLinks().add(new Link(i, ll));
+            int linkFrom = link.getFrom();
+            int linkTo = link.getTo();
+            int latency = nodes.get(linkFrom).getLatency() + nodes.get(linkTo).getLatency() + link.getLatency();
+            nodes.get(linkFrom).getLinks().add(new Link(linkTo, latency));
+            nodes.get(linkTo).getLinks().add(new Link(linkFrom, latency));
         }
 
         Network network = new Network(nodes, CONSENSUS_PERCENT);
@@ -103,6 +101,7 @@ public class GraphSimulator {
                 return;
             }
 
+            // Assumes order from the network message stream
             Event event = network.getMessages().stream().findFirst().get();
             if ((event.getReceiveTime() / 100) > (network.getMasterTime() / 100)) {
                 System.out.println("\t\t" + event.getReceiveTime()
@@ -114,9 +113,9 @@ public class GraphSimulator {
             for (Message message : event.getMessages()) {
                 if (message.hasEmptyData()) {
                     // Message was never sent
-                    nodes.get(message.getFromNodeId()).decreaseMessagesSent();
+                    network.getNodes().get(message.getFromNodeId()).decreaseMessagesSent();
                 } else {
-                    nodes.get(message.getToNodeId()).receiveMessage(message, network, unlThresh);
+                    network.getNodes().get(message.getToNodeId()).receiveMessage(message, network, unlThresh);
                 }
             }
 
@@ -124,19 +123,14 @@ public class GraphSimulator {
 
         } while (true);
 
-        // Count nodes and check convergence
-        int nodesPositive = network.countVotes(NodeState.Vote.POSITIVE);
-        int nodesNegative = network.countVotes(NodeState.Vote.NEGATIVE);
-        System.out.println("\t" + network.getMasterTime() + ";\t\t" + nodesPositive + ";\t\t" + nodesNegative);
-        System.out.println("Consensus reached in " + network.getMasterTime() + " ms with "
-                + network.countMessagesOnTheWire() + " messages on the wire");
+        System.out.println("\t" + network.getMasterTime()
+                + ";\t\t" + network.countVotes(NodeState.Vote.POSITIVE)
+                + ";\t\t" + network.countVotes(NodeState.Vote.NEGATIVE));
 
-        // Output result
-        long totalMsgSent = 0;
-        for (Node node : nodes.values()) {
-            totalMsgSent += node.getMessagesSent();
-        }
-        System.out.println("The average node sent " + (totalMsgSent / numNodes) + " messages");
+        System.out.println("Consensus reached in " + network.getMasterTime() + " ms "
+                + "with " + network.countMessagesOnTheWire() + " messages on the wire");
+
+        System.out.println("The average node sent " + (network.countMessagesSent() / numNodes) + " messages");
 
     }
 
