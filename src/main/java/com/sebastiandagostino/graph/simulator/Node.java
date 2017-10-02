@@ -104,49 +104,6 @@ public class Node {
         this.vote = vote;
     }
 
-    public String toJsonString() {
-        // Begin
-        String string = "{ ";
-        // NodeId
-        string += "\"nodeId\": " + nodeId + ", ";
-        // Vote
-        string += "\"vote\": " + vote + ", ";
-        // Latency
-        string += "\"latency\": " + latency + ", ";
-        // UNL
-        int size = uniqueNodeList.size();
-        string += "\"uniqueNodeList\": [ ";
-        for (int i = 0; i < size; i++) {
-            string += uniqueNodeList.get(i);
-            if (i != size - 1) {
-                string += ", ";
-            }
-        }
-        string += "] ";
-        // End
-        string += " }";
-        return string;
-    }
-
-    public String toLinkString() {
-        String string = "{ ";
-        int size = links.size();
-        string += "\"links\": [";
-        for (int i = 0; i < size; i++) {
-            string += " { \"nodeId\": " + links.get(i).getToNodeId() + ", ";
-            string += "\"totalLatency\": " + links.get(i).getTotalLatency() + ", ";
-            string += "\"sendTime\": " + links.get(i).getSendTime() + " }";
-            if (i != size - 1) {
-                string += ", ";
-            } else {
-                string += " ";
-            }
-        }
-        string += "] ";
-        string += " }";
-        return string;
-    }
-
     public void receiveMessage(Message message, Network network, Node[] nodes, int unlThresh) {
         messagesReceived++;
 
