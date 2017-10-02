@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Event implements Comparable<Event> {
 
-    private int receiveTime;
+    private final int receiveTime;
 
     private List<Message> messages;
 
