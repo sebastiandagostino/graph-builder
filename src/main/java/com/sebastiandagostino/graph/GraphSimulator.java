@@ -8,7 +8,6 @@ import com.sebastiandagostino.graph.simulator.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 public class GraphSimulator {
 
@@ -29,7 +28,7 @@ public class GraphSimulator {
         }
 
         ObjectMapper mapper = new ObjectMapper();
-        GraphJsonMapping json = null;
+        GraphJsonMapping json;
         try {
             json = mapper.readValue(new File(fileName), GraphJsonMapping.class);
         } catch (IOException e) {
@@ -55,10 +54,9 @@ public class GraphSimulator {
             int vote = node.getVote();
             int latency = node.getLatency();
             Node newNode = new Node(nodeId, numNodes, latency);
-            nodes[nodeId] = newNode;
-            newNode.getNodeStates()[nodeId] = vote;
-            newNode.getNodeTimeStamps()[nodeId] = 1;
             newNode.setVote(vote);
+            newNode.getNodeTimeStamps()[nodeId] = 1;
+            nodes[nodeId] = newNode;
 
             // Build our UNL
             for (Integer unlNode : node.getUniqueNodeList()) {
@@ -85,7 +83,7 @@ public class GraphSimulator {
         for (Node node : nodes) {
             for (Link link : node.getLinks()) {
                 Message message = new Message(node.getNodeId(), link.getToNodeId());
-                message.insertData(node.getNodeId(), node.getNodeStates()[node.getNodeId()]);
+                message.insertData(node.getNodeId(), nodes[node.getNodeId()].getVote());
                 network.sendMessage(message, link, 0);
             }
 
@@ -118,22 +116,23 @@ public class GraphSimulator {
                 return;
             }
 
-            Map.Entry<Integer, Event> event = network.getMessages().entrySet().stream().findFirst().get();
-            if ((event.getKey() / 100) > (network.getMasterTime() / 100)) {
-                System.out.println("\t\t" + event.getKey() + ";\t\t" + nodesPositive + ";\t\t" + nodesNegative);
+            Event event = network.getMessages().stream().findFirst().get();
+            if ((event.getReceiveTime() / 100) > (network.getMasterTime() / 100)) {
+                System.out.println("\t\t" + event.getReceiveTime() + ";\t\t" + nodesPositive + ";\t\t" + nodesNegative);
             }
-            network.setMasterTime(event.getKey());
+            network.setMasterTime(event.getReceiveTime());
 
-            for (Message message : event.getValue().getMessages()) {
+            for (Message message : event.getMessages()) {
                 if (message.hasEmptyData()) {
                     // Message was never sent
                     nodes[message.getFromNodeId()].decreaseMessagesSent();
                 } else {
-                    nodes[message.getToNodeId()].receiveMessage(message, network, unlThresh);
+                    nodes[message.getToNodeId()].receiveMessage(message, network, nodes, unlThresh);
                 }
             }
 
-            network.getMessages().remove(event.getKey());
+            network.getMessages().remove(event);
+
         } while (true);
 
         int nodesPositive = 0;

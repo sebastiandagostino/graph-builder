@@ -14,6 +14,7 @@ public class NodeState {
     public NodeState(int nodeId, int timeStamp, int state) {
         this.nodeId = nodeId;
         this.timeStamp = timeStamp;
+        this.state = state;
     }
 
     public int getNodeId() {
@@ -50,6 +51,15 @@ public class NodeState {
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37).append(nodeId).toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "NodeState{" +
+                "nodeId=" + nodeId +
+                ", timeStamp=" + timeStamp +
+                ", state=" + state +
+                '}';
     }
 
 }

@@ -29,8 +29,6 @@ public class Node {
 
     private Integer[] nodeTimeStamps;
 
-    private Integer[] nodeStates;
-
     private int messagesSent;
 
     private int messagesReceived;
@@ -43,7 +41,6 @@ public class Node {
         this.uniqueNodeList = new ArrayList<>();
         this.links = new ArrayList<>();
         this.nodeTimeStamps = new Integer[numNodes];
-        this.nodeStates = new Integer[numNodes];
         this.messagesSent = 0;
         this.messagesReceived = 0;
         this.vote = 0;
@@ -75,10 +72,6 @@ public class Node {
 
     public Integer[] getNodeTimeStamps() {
         return nodeTimeStamps;
-    }
-
-    public Integer[] getNodeStates() {
-        return nodeStates;
     }
 
     public int getMessagesReceived() {
@@ -154,7 +147,7 @@ public class Node {
         return string;
     }
 
-    public void receiveMessage(Message message, Network network, int unlThresh) {
+    public void receiveMessage(Message message, Network network, Node[] nodes, int unlThresh) {
         messagesReceived++;
 
         // If we were going to send any of this data to that node, skip it
@@ -170,13 +163,13 @@ public class Node {
         Map<Integer, NodeState> changes = new HashMap<>();
 
         for (Map.Entry<Integer, NodeState> chgIt : message.getData().entrySet()) {
-            int nodeStateValue = nodeStates[chgIt.getKey()] != null ? nodeStates[chgIt.getKey()] : 0;
+            int nodeStateValue = nodes[chgIt.getKey()].getVote();
             int nodeTimeStampValue = nodeTimeStamps[chgIt.getKey()] != null ? nodeTimeStamps[chgIt.getKey()] : 0;
             if ((chgIt.getKey() != nodeId)
                     && (nodeStateValue != chgIt.getValue().getState())
                     && (chgIt.getValue().getTimeStamp() > nodeTimeStampValue)) {
                 // This gives us new information about a node
-                nodeStates[chgIt.getKey()] = chgIt.getValue().getState();
+                nodes[chgIt.getKey()].setVote(chgIt.getValue().getState());
                 nodeTimeStamps[chgIt.getKey()] = chgIt.getValue().getTimeStamp();
                 changes.put(chgIt.getKey(), chgIt.getValue());
             }
@@ -190,11 +183,11 @@ public class Node {
         int unlCount = 0;
         int unlBalance = 0;
         for (int node : uniqueNodeList) {
-            if (nodeStates[node] == 1) {
+            if (nodes[node].getVote() == 1) {
                 unlCount++;
                 unlBalance++;
             }
-            if (nodeStates[node] == -1) {
+            if (nodes[node].getVote() == -1) {
                 unlCount++;
                 unlBalance--;
             }
@@ -210,15 +203,15 @@ public class Node {
 
         boolean positionChange = false;
         if (unlCount >= unlThresh) { // We have enough data to make decisions
-            if ((nodeStates[nodeId] == 1) && (unlBalance < (-SELF_WEIGHT))) {
+            if ((nodes[nodeId].getVote() == 1) && (unlBalance < (-SELF_WEIGHT))) {
                 // we switch to -
-                nodeStates[nodeId] = -1;
+                nodes[nodeId].setVote(-1);
                 vote = -1;
                 changes.put(nodeId, new NodeState(nodeId, ++nodeTimeStamps[nodeId], -1));
                 positionChange = true;
-            } else if ((nodeStates[nodeId] == -1) && (unlBalance > SELF_WEIGHT)) {
+            } else if ((nodes[nodeId].getVote() == -1) && (unlBalance > SELF_WEIGHT)) {
                 // we switch to +
-                nodeStates[nodeId] = 1;
+                nodes[nodeId].setVote(1);
                 vote = 1;
                 changes.put(nodeId, new NodeState(nodeId, ++nodeTimeStamps[nodeId], +1));
                 positionChange = true;

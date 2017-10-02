@@ -1,5 +1,8 @@
 package com.sebastiandagostino.graph.simulator;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,6 +69,32 @@ public class Message {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Message message = (Message) o;
+        return new EqualsBuilder().append(fromNodeId, message.fromNodeId).append(toNodeId, message.toNodeId).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(fromNodeId).append(toNodeId).toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "fromNodeId=" + fromNodeId +
+                ", toNodeId=" + toNodeId +
+                ", data=" + data +
+                '}';
     }
 
 }

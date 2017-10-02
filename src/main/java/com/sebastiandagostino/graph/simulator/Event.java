@@ -1,23 +1,37 @@
 package com.sebastiandagostino.graph.simulator;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public class Event {
+public class Event implements Comparable<Event> {
 
-    // TODO: Add Equals and HashCode?
+    private int receiveTime;
+
     private List<Message> messages;
 
-    public Event() {
+    public Event(int receiveTime) {
+        this.receiveTime = receiveTime;
         this.messages = new ArrayList<>();
-    }
-
-    public void addMessage(Message message) {
-        messages.add(message);
     }
 
     public List<Message> getMessages() {
         return messages;
+    }
+
+    public int getReceiveTime() {
+        return receiveTime;
+    }
+
+    @Override
+    public int compareTo(Event other) {
+        return this.receiveTime - other.receiveTime;
+    }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "receiveTime=" + receiveTime +
+                ", messages=" + messages +
+                '}';
     }
 
 }

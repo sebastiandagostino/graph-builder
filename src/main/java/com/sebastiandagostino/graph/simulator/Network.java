@@ -1,17 +1,16 @@
 package com.sebastiandagostino.graph.simulator;
 
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class Network {
 
     private int masterTime;
 
-    private Map<Integer, Event> messages;
+    private List<Event> messages;
 
     public Network() {
         this.masterTime = 0;
-        this.messages = new TreeMap<>();
+        this.messages = new LinkedList();
     }
 
     public int getMasterTime() {
@@ -23,16 +22,15 @@ public class Network {
     }
 
     public void sendMessage(Message message, Link link, int sendTime) {
-        assert(message.getToNodeId() == link.getToNodeId());
-
-        link.setSendTime(sendTime);
-
-        Event event = new Event();
-        event.addMessage(message);
-
-        messages.put(link.getReceiveTime(), event);
-
-        link.getMessages().addAll(event.getMessages());
+        if (message.getToNodeId() == link.getToNodeId()) {
+            link.setSendTime(sendTime);
+            Event event = new Event(link.getReceiveTime());
+            event.getMessages().add(message);
+            messages.add(event);
+            // TODO: Improve the performance of this line
+            Collections.sort(messages);
+            link.getMessages().addAll(event.getMessages());
+        }
     }
 
     public int countMessages() {
@@ -40,14 +38,14 @@ public class Network {
     }
 
     public int countMessagesOnTheWire() {
-        int mc = 0;
-        for (Map.Entry<Integer, Event> entry : messages.entrySet()) {
-            mc += entry.getValue().getMessages().size();
+        int messageCount = 0;
+        for (Event event : messages) {
+            messageCount += event.getMessages().size();
         }
-        return mc;
+        return messageCount;
     }
 
-    public Map<Integer, Event> getMessages() {
+    public Collection<Event> getMessages() {
         return messages;
     }
 
