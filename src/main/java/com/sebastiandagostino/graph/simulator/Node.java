@@ -27,23 +27,23 @@ public class Node {
 
     private List<Link> links;
 
-    private Integer[] nodeTimeStamps;
+    private int timestamp;
 
     private int messagesSent;
 
     private int messagesReceived;
 
-    private int vote;
+    private NodeState.Vote vote;
 
-    public Node(int nodeId, int numNodes, int latency) {
+    public Node(int nodeId, int latency, NodeState.Vote vote) {
         this.nodeId = nodeId;
         this.latency = latency;
+        this.vote = vote;
+        this.timestamp = 1;
         this.uniqueNodeList = new ArrayList<>();
         this.links = new ArrayList<>();
-        this.nodeTimeStamps = new Integer[numNodes];
         this.messagesSent = 0;
         this.messagesReceived = 0;
-        this.vote = 0;
     }
 
     public int getNodeId() {
@@ -70,8 +70,16 @@ public class Node {
         return links;
     }
 
-    public Integer[] getNodeTimeStamps() {
-        return nodeTimeStamps;
+    public int getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(int timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public void incrementTimestamp() {
+        this.timestamp++;
     }
 
     public int getMessagesReceived() {
@@ -96,11 +104,11 @@ public class Node {
         return false;
     }
 
-    public int getVote() {
+    public NodeState.Vote getVote() {
         return this.vote;
     }
 
-    public void setVote(int vote) {
+    public void setVote(NodeState.Vote vote) {
         this.vote = vote;
     }
 
@@ -120,14 +128,12 @@ public class Node {
         Map<Integer, NodeState> changes = new HashMap<>();
 
         for (Map.Entry<Integer, NodeState> chgIt : message.getData().entrySet()) {
-            int nodeStateValue = nodes[chgIt.getKey()].getVote();
-            int nodeTimeStampValue = nodeTimeStamps[chgIt.getKey()] != null ? nodeTimeStamps[chgIt.getKey()] : 0;
             if ((chgIt.getKey() != nodeId)
-                    && (nodeStateValue != chgIt.getValue().getState())
-                    && (chgIt.getValue().getTimeStamp() > nodeTimeStampValue)) {
+                    && (nodes[chgIt.getKey()].getVote() != chgIt.getValue().getState())
+                    && (chgIt.getValue().getTimestamp() > nodes[chgIt.getKey()].getTimestamp())) {
                 // This gives us new information about a node
                 nodes[chgIt.getKey()].setVote(chgIt.getValue().getState());
-                nodeTimeStamps[chgIt.getKey()] = chgIt.getValue().getTimeStamp();
+                nodes[chgIt.getKey()].setTimestamp(chgIt.getValue().getTimestamp());
                 changes.put(chgIt.getKey(), chgIt.getValue());
             }
         }
@@ -140,11 +146,11 @@ public class Node {
         int unlCount = 0;
         int unlBalance = 0;
         for (int node : uniqueNodeList) {
-            if (nodes[node].getVote() == 1) {
+            if (nodes[node].getVote() == NodeState.Vote.POSITIVE) {
                 unlCount++;
                 unlBalance++;
             }
-            if (nodes[node].getVote() == -1) {
+            if (nodes[node].getVote() == NodeState.Vote.NEGATIVE) {
                 unlCount++;
                 unlBalance--;
             }
@@ -160,17 +166,19 @@ public class Node {
 
         boolean positionChange = false;
         if (unlCount >= unlThresh) { // We have enough data to make decisions
-            if ((nodes[nodeId].getVote() == 1) && (unlBalance < (-SELF_WEIGHT))) {
+            if ((nodes[nodeId].getVote() == NodeState.Vote.POSITIVE) && (unlBalance < (-SELF_WEIGHT))) {
                 // we switch to -
-                nodes[nodeId].setVote(-1);
-                vote = -1;
-                changes.put(nodeId, new NodeState(nodeId, ++nodeTimeStamps[nodeId], -1));
+                nodes[nodeId].setVote(NodeState.Vote.NEGATIVE);
+                //vote = -1;
+                nodes[nodeId].incrementTimestamp();
+                changes.put(nodeId, new NodeState(nodeId, nodes[nodeId].getTimestamp(), NodeState.Vote.NEGATIVE));
                 positionChange = true;
-            } else if ((nodes[nodeId].getVote() == -1) && (unlBalance > SELF_WEIGHT)) {
+            } else if ((nodes[nodeId].getVote() == NodeState.Vote.NEGATIVE) && (unlBalance > SELF_WEIGHT)) {
                 // we switch to +
-                nodes[nodeId].setVote(1);
-                vote = 1;
-                changes.put(nodeId, new NodeState(nodeId, ++nodeTimeStamps[nodeId], +1));
+                nodes[nodeId].setVote(NodeState.Vote.POSITIVE);
+                //vote = 1;
+                nodes[nodeId].incrementTimestamp();
+                changes.put(nodeId, new NodeState(nodeId, nodes[nodeId].getTimestamp(), NodeState.Vote.POSITIVE));
                 positionChange = true;
             }
         }

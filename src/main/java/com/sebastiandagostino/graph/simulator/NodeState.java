@@ -5,33 +5,42 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class NodeState {
 
+    public enum Vote {
+        POSITIVE,
+        NEGATIVE
+    }
+
     private int nodeId;
 
-    private int timeStamp;
+    private int timestamp;
 
-    private int state;
+    private Vote state;
 
-    public NodeState(int nodeId, int timeStamp, int state) {
+    public NodeState(int nodeId, int timestamp, Vote state) {
         this.nodeId = nodeId;
-        this.timeStamp = timeStamp;
+        this.timestamp = timestamp;
         this.state = state;
+    }
+
+    public NodeState(int nodeId, Vote state) {
+        this(nodeId, 1, state);
     }
 
     public int getNodeId() {
         return nodeId;
     }
 
-    public int getTimeStamp() {
-        return timeStamp;
+    public int getTimestamp() {
+        return timestamp;
     }
 
-    public int getState() {
+    public Vote getState() {
         return state;
     }
 
     public void updateStateIfTimeStampIsHigher(NodeState nodeState) {
-        if (this.nodeId == nodeState.getNodeId() && nodeState.getTimeStamp() > this.getTimeStamp()) {
-            this.timeStamp = nodeState.getTimeStamp();
+        if (this.nodeId == nodeState.getNodeId() && nodeState.getTimestamp() > this.getTimestamp()) {
+            this.timestamp = nodeState.getTimestamp();
             this.state = nodeState.getState();
         }
     }
@@ -57,7 +66,7 @@ public class NodeState {
     public String toString() {
         return "NodeState{" +
                 "nodeId=" + nodeId +
-                ", timeStamp=" + timeStamp +
+                ", timestamp=" + timestamp +
                 ", state=" + state +
                 '}';
     }

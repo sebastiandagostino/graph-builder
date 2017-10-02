@@ -51,11 +51,9 @@ public class GraphSimulator {
         for (NodeJsonMapping node : json.getNodes()) {
             // NodeIds must be from 0 until numNodes - 1
             int nodeId = node.getNodeId();
-            int vote = node.getVote();
+            NodeState.Vote vote = node.getVote() > 0 ? NodeState.Vote.POSITIVE : NodeState.Vote.NEGATIVE;
             int latency = node.getLatency();
-            Node newNode = new Node(nodeId, numNodes, latency);
-            newNode.setVote(vote);
-            newNode.getNodeTimeStamps()[nodeId] = 1;
+            Node newNode = new Node(nodeId, latency, vote);
             nodes[nodeId] = newNode;
 
             // Build our UNL
@@ -98,9 +96,9 @@ public class GraphSimulator {
             int nodesNegative = 0;
             // Count nodes and check convergence
             for (Node node : nodes) {
-                if (node.getVote() > 0) {
+                if (node.getVote() == NodeState.Vote.POSITIVE) {
                     nodesPositive++;
-                } else if (node.getVote() < 0) {
+                } else if (node.getVote() == NodeState.Vote.NEGATIVE) {
                     nodesNegative++;
                 }
             }
@@ -139,9 +137,9 @@ public class GraphSimulator {
         int nodesNegative = 0;
         // Count nodes and check convergence
         for (Node node : nodes) {
-            if (node.getVote() > 0) {
+            if (node.getVote() == NodeState.Vote.POSITIVE) {
                 nodesPositive++;
-            } else if (node.getVote() < 0) {
+            } else if (node.getVote() == NodeState.Vote.NEGATIVE) {
                 nodesNegative++;
             }
         }

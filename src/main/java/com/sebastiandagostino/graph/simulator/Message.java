@@ -40,8 +40,8 @@ public class Message {
         return data.isEmpty();
     }
 
-    public void insertData(int nodeId, int status) {
-        this.data.put(nodeId, new NodeState(nodeId, 1, status));
+    public void insertData(int nodeId, NodeState.Vote status) {
+        this.data.put(nodeId, new NodeState(nodeId, status));
     }
 
     void addPositions(Map<Integer, NodeState> update) {
@@ -64,7 +64,7 @@ public class Message {
         for (Map.Entry<Integer, NodeState> receivedState : received.entrySet()) {
             if (receivedState.getKey() != this.toNodeId) {
                 NodeState msgIt = data.get(receivedState.getKey());
-                if (msgIt != null && (receivedState.getValue().getTimeStamp() >= msgIt.getTimeStamp())) {
+                if (msgIt != null && (receivedState.getValue().getTimestamp() >= msgIt.getTimestamp())) {
                     data.remove(receivedState.getKey()); // The node doesn't need the data: msgIt
                 }
             }
