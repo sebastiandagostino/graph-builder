@@ -7,7 +7,8 @@ public class NodeState {
 
     public enum Vote {
         POSITIVE,
-        NEGATIVE;
+        NEGATIVE,
+        NEUTRAL; // Just for the starting case
 
         public static Vote fromInteger(int vote) {
             if (vote > 0) {
@@ -29,8 +30,8 @@ public class NodeState {
         this.state = state;
     }
 
-    public NodeState(int nodeId, Vote state) {
-        this(nodeId, 1, state);
+    public NodeState(int nodeId) {
+        this(nodeId, 1, Vote.NEUTRAL);
     }
 
     public int getNodeId() {

@@ -80,7 +80,7 @@ public class GraphSimulator {
         for (Node node : nodes.values()) {
             for (Link link : node.getLinks()) {
                 Message message = new Message(node.getId(), link.getToNodeId());
-                message.insertData(node.getId(), nodes.get(node.getId()).getVote());
+                message.insertData(node.getId());
                 network.sendMessage(message, link);
             }
 

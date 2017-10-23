@@ -40,8 +40,8 @@ public class Message {
         return data.isEmpty();
     }
 
-    public void insertData(int nodeId, NodeState.Vote status) {
-        this.data.put(nodeId, new NodeState(nodeId, status));
+    public void insertData(int nodeId) {
+        this.data.put(nodeId, new NodeState(nodeId));
     }
 
     void addPositions(Map<Integer, NodeState> update) {

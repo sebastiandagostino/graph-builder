@@ -39,7 +39,7 @@ public class Node {
         this.id = id;
         this.latency = latency;
         this.vote = vote;
-        this.timestamp = 1;
+        this.timestamp = 0;
         this.uniqueNodeList = new ArrayList<>();
         this.links = new ArrayList<>();
         this.messagesSent = 0;
